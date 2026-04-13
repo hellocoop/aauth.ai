@@ -46,6 +46,7 @@ AAuth supports four resource access modes, each adding parties and capabilities:
 ## Specifications
 
 - [AAuth Protocol (Internet-Draft)](https://datatracker.ietf.org/doc/draft-hardt-aauth-protocol) — The authorization protocol. Four access modes, three token types, agent governance with missions, clarification chat, and call chaining.
+- [AAuth Headers (Internet-Draft)](https://datatracker.ietf.org/doc/draft-hardt-aauth-headers/) — HTTP response headers used across AAuth: AAuth-Requirement, AAuth-Access, and AAuth-Error.
 - [HTTP Signature Keys (Internet-Draft)](https://datatracker.ietf.org/doc/draft-hardt-httpbis-signature-key/) — Foundation layer. Well-known key discovery, Signature-Key header for conveying public keying material alongside HTTP Message Signatures (RFC 9421).
 - [R3 — Rich Resource Requests (Exploratory)](https://dickhardt.github.io/AAuth/draft-hardt-aauth-r3.html) — Vocabulary-based authorization using formats agents already understand (MCP, OpenAPI, gRPC, GraphQL).
 

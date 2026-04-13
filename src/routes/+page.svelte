@@ -86,7 +86,7 @@
 		{
 			name: 'PS-Managed',
 			parties: 'Agent + Resource + PS',
-			desc: 'Resource issues a resource token. PS issues an auth token carrying user identity and organization context.',
+			desc: 'Resource issues a resource token. PS issues an auth token carrying user identity and scope.',
 			diagram: `Agent            Resource       PS
   │                 │            │
   │  HTTPSig        │            │
@@ -149,6 +149,14 @@
 			editorsCopy: 'https://dickhardt.github.io/AAuth/draft-hardt-aauth-protocol.html',
 			desc: 'The authorization protocol for agent-to-resource access. Four access modes, three token types, agent governance, missions, clarification chat, and call chaining.',
 			primary: true
+		},
+		{
+			name: 'AAuth Headers',
+			status: 'Internet-Draft',
+			href: 'https://datatracker.ietf.org/doc/draft-hardt-aauth-headers/',
+			editorsCopy: 'https://dickhardt.github.io/AAuth/draft-hardt-aauth-headers.html',
+			desc: 'HTTP response headers used across AAuth: AAuth-Requirement (what the resource needs), AAuth-Access (opaque access token), and AAuth-Error (structured error reporting).',
+			primary: false
 		},
 		{
 			name: 'HTTP Signature Keys',
@@ -233,7 +241,7 @@
 				href="#get-started"
 				class="inline-flex items-center gap-2 px-7 py-3.5 rounded-lg border border-[var(--color-border)] hover:border-[var(--color-border-hover)] text-[var(--color-text)] font-medium no-underline transition-colors"
 			>
-				Install the CLI
+				See Implementations
 			</a>
 		</div>
 
@@ -345,7 +353,7 @@
 						<span class="text-[var(--color-text-muted)]"> /api/resource </span>
 						<span class="text-[var(--color-text-dim)]">HTTP/1.1</span>
 						<br />
-						<span class="text-[var(--color-text-dim)]">Signature-Key: eyJ...agent-token</span>
+						<span class="text-[var(--color-text-dim)]">Signature-Key: sig=jwt; jwt="eyJ...agent-token"</span>
 						<br />
 						<span class="text-[var(--color-text-dim)]">Signature: sig1=:base64...:</span>
 					</div>
@@ -353,9 +361,9 @@
 					<div class="mb-4 pl-4 border-l-2 border-[var(--color-resource)]">
 						<span class="text-[var(--color-resource)]">&larr; 202 Accepted</span>
 						<br />
-						<span class="text-[var(--color-text-dim)]">AAuth-Requirement: requirement=interaction</span>
+						<span class="text-[var(--color-text-dim)]">AAuth-Requirement: requirement=interaction;</span>
 						<br />
-						<span class="text-[var(--color-text-dim)]">  uri=https://resource.example/consent/abc</span>
+						<span class="text-[var(--color-text-dim)]">  url="https://resource.example/consent/abc"; code="ABCD1234"</span>
 					</div>
 
 					<div class="mb-4 text-[var(--color-ps)] text-center text-xs tracking-wider uppercase">
