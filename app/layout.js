@@ -5,11 +5,11 @@ export const metadata = {
     template: '%s | AAuth',
     default: 'AAuth — Authentication & Authorization for Autonomous Agents',
   },
-  description: 'AAuth is an authentication and authorization protocol for autonomous agents and dynamic ecosystems.',
+  description: 'AAuth is an authorization protocol for autonomous agents and headless systems — agent identity, resource access, and user delegation without pre-registration.',
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://www.aauth.ai',
+    url: 'https://www.aauth.dev',
     siteName: 'AAuth',
   },
   twitter: {

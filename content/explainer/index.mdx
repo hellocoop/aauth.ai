@@ -1,22 +1,20 @@
 # AAuth Explainer
 
-AAuth is an authentication and authorization protocol for autonomous agents and dynamic ecosystems. It is **not** intended as a replacement for OAuth or OIDC — it is not OAuth 3.0. It is a separate protocol for new use cases where the assumptions behind OAuth — pre-registered clients, browser redirects, bearer tokens, static scopes — are not a good fit.
+AAuth is an authentication and authorization protocol for autonomous agents and headless systems. It is **not** intended as a replacement for OAuth or OIDC — it is not OAuth 3.0. It is a complementary protocol for use cases where OAuth's assumptions — pre-registered clients, browser redirects, bearer tokens, static scopes — do not apply.
 
-## What's Changed Since OAuth
+## HTTP Clients Need Their Own Identity
 
-OAuth 2.0 was designed for a specific problem: a user authorizing a registered web application to access their data at a specific API provider. The user's browser redirects to the provider, the user consents, and the application receives a bearer token. OpenID Connect extended this to federated login. Together, they serve these use cases well and continue to be the right choice for them.
+In OAuth 2.0 and OpenID Connect, the client has no independent identity. A `client_id` at Google is meaningless at GitHub. The client's identity exists only in the context of each server it has pre-registered with. API keys push the same model further: a shared secret that must be copied to where the workload runs — and will eventually be copied somewhere it shouldn't be.
 
-But the landscape has changed:
+SPIFFE and WIMSE brought workload identity to enterprise infrastructure, but these operate within a single trust domain. They don't help an agent that needs to access resources across organizational boundaries.
 
-- **Autonomous agents operate without browsers.** In environments like MCP, agents interact with servers they were never pre-registered with. Many are headless processes that cannot receive browser redirects.
+AAuth starts from this premise: **every agent has its own cryptographic identity.** An agent identifier (`aauth:local@domain`) is bound to a signing key, published at a well-known URL, and verifiable by any party — no pre-registration, no shared secrets, no dependency on a particular server.
 
-- **On-demand authorization across trust domains.** Long-running agents discover authorization needs at runtime. Resources may be governed by different auth servers, requiring cross-domain federation that OAuth's single-authorization-server model does not support.
+## Agents Are Different
 
-- **Progressive trust is needed.** Resources need different levels of assurance for different operations, but OAuth provides only a binary authenticated/unauthenticated model.
+Traditional software knows at build time what services it will call and what permissions it needs. Registration, key provisioning, and scope configuration happen before the first request.
 
-- **Consent needs context.** OAuth scopes convey *what* access is requested but not *why* or under what conditions. Users cannot ask questions about what an agent intends to do.
-
-- **Security has evolved.** Bearer token exfiltration is a common attack vector. Proof-of-possession with digital signatures is now practical, yet bearer tokens remain the default.
+Agents don't work this way. They discover resources at runtime. They execute long-running tasks that span multiple services across trust domains. They need to explain what they're doing and why. They need authorization decisions mid-task, long after the user set them in motion. They may need to ask the user questions — or have the user ask them questions — before authorization can proceed.
 
 ## How AAuth Addresses These Gaps
 
@@ -24,11 +22,20 @@ But the landscape has changed:
 |-----|---------------|
 | No browser | Polling-based token delivery (`202 Accepted` + `Location`) |
 | No pre-registration | Agent identity via HTTPS URLs with self-published metadata |
+| No independent client identity | Per-instance `aauth:local@domain` identifiers with signing keys |
 | Binary auth | Progressive trust: pseudonym → identity → interaction → approval |
 | Opaque scopes | Justification parameter + clarification chat during consent |
 | Bearer tokens | HTTP Message Signatures on every request, proof-of-possession only |
-| Single auth server | Cross-domain AS federation |
+| Single auth server | Cross-domain PS-to-AS federation |
+| No tool governance | Person Server manages tool permissions and audit directly |
 | Separate authN/authZ | Unified auth token carries identity and authorization |
+
+## What AAuth Does Not Do
+
+- Does not grant automatic access — services decide what to do with a verified identity
+- Does not replace service authorization decisions
+- Does not require centralized identity providers
+- Complements OAuth for browser-based user login; does not replace it
 
 ## Learn More
 

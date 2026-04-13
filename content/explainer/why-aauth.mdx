@@ -4,13 +4,13 @@
 
 OAuth requires every client to pre-register with every auth server it will ever talk to, exchanging client IDs and secrets out of band. This breaks down in open ecosystems where any agent might need to talk to any resource — MCP, autonomous agents, multi-vendor toolchains.
 
-AAuth agents self-publish identity at an HTTPS URL. Any agent can interact with any auth server or resource on first contact with no admin portal, no client credentials, and no onboarding friction. This is the difference between "works in a walled garden" and "works on the internet."
+AAuth agents self-publish identity at an HTTPS URL. Any agent can interact with any auth server or resource on first contact with no admin portal, no client credentials, and no onboarding friction. The first API call *is* the registration. This is the difference between "works in a walled garden" and "works on the internet."
 
-## 2. Stolen tokens are worthless
+## 2. Per-instance identity with stolen tokens worthless
 
-Every OAuth deployment starts with bearer tokens. Bolting on proof-of-possession (DPoP, mTLS) is optional and partial — DPoP does not cover request integrity, mTLS terminates at the first proxy.
+Every OAuth deployment starts with bearer tokens and shared `client_id` secrets. Bolting on proof-of-possession (DPoP, mTLS) is optional and partial — DPoP does not cover request integrity, mTLS terminates at the first proxy.
 
-AAuth has no bearer path. Every request is signed with HTTP Message Signatures. Every token is bound to the signer's key via a `cnf` claim. A leaked token, a leaked log line, a compromised CDN cache — none of these yield usable credentials. This is not a hardening option; it is the only mode.
+AAuth gives each agent instance its own identifier (`aauth:local@domain`) and signing key — no more shared secrets across instances. Every request is signed with HTTP Message Signatures. Every token is bound to the signer's key via a `cnf` claim. A leaked token, a leaked log line, a compromised CDN cache — none of these yield usable credentials. This is not a hardening option; it is the only mode.
 
 ## 3. Resources have cryptographic identity — not just agents
 
@@ -39,3 +39,9 @@ AAuth provides a trust ladder within a single protocol:
 | **Authorized** | User-delegated access (auth token) | Full API access |
 
 A resource can start at pseudonymous and escalate on demand using the same `AAuth-Requirement` mechanism. A single API can serve anonymous browsing, known-agent access, and fully authorized operations with the same protocol, same signing, and same headers.
+
+## 6. Tool-call governance without resource involvement
+
+OAuth has no mechanism for governing what tools an agent calls — it only handles resource access after a grant is issued.
+
+AAuth's Person Server (PS) works directly with the agent to manage what tools the agent can call, providing permission and audit for tool use without any resource needing to be involved. Combined with [missions](/specs/mission/), the PS sees every authorization decision, providing centralized audit while the agent executes autonomously within approved bounds.

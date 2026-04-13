@@ -10,7 +10,8 @@ AAuth has three types of entities and three types of tokens.
 |--------|------|----------|
 | **Agent** | Makes requests on behalf of a user (or autonomously) | `local@domain` with self-published metadata + JWKS |
 | **Resource** | Serves protected data or functionality | HTTPS URL with published metadata + JWKS |
-| **Auth Server (AS)** | Issues authorization tokens | HTTPS URL with published metadata |
+| **Person Server (PS)** | Brokers authorization for the agent's user | HTTPS URL with published metadata |
+| **Access Server (AS)** | Issues authorization tokens for a resource | HTTPS URL with published metadata |
 
 ### Tokens
 
@@ -87,7 +88,7 @@ When an auth token expires, the agent presents the expired token to the token en
 
 ## Cross-Domain Federation
 
-An agent's AS can call a resource's AS to obtain an auth token on behalf of its agent. The agent and resource need not be aware of the federation — they interact with their own AS as usual.
+An agent's Person Server (PS) can call a resource's Access Server (AS) to obtain an auth token on behalf of its agent. The agent and resource need not be aware of the federation — they interact with their own servers as usual.
 
 ## Call Chaining
 

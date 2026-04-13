@@ -5,7 +5,7 @@
     --nextra-primary-hue: 220deg;
     --nextra-primary-saturation: 80%;
     --nextra-primary-lightness: 50%;
-    --nextra-bg: 250,250,250;
+    --nextra-bg: 252,252,253;
     --nextra-content-width: 90rem;
 }
 
@@ -13,7 +13,7 @@
     --nextra-primary-hue: 220deg;
     --nextra-primary-saturation: 80%;
     --nextra-primary-lightness: 60%;
-    --nextra-bg: 17,17,17;
+    --nextra-bg: 15,15,20;
 }
 
 html {
@@ -23,4 +23,31 @@ html {
 
 ::selection {
     background: hsla(var(--nextra-primary-hue),var(--nextra-primary-saturation),var(--nextra-primary-lightness),.3);
+}
+
+/* Smoother typography */
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Better table styling */
+table {
+    border-collapse: collapse;
+}
+
+th {
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.75rem;
+}
+
+/* Subtle link hover transitions */
+a {
+    transition: color 0.15s ease;
+}
+
+/* Code block refinement */
+code {
+    font-size: 0.875em;
 }

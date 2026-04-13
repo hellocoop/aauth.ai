@@ -23,8 +23,9 @@ A single endpoint handles all authorization scenarios. When the response can't b
 
 - **Deferred responses** — `202 Accepted` + polling for any async flow
 - **Clarification chat** — users can ask the agent questions during consent
+- **Tool-call governance** — Person Server manages what tools the agent can call
 - **Call chaining** — resources access downstream resources on behalf of the caller
-- **Cross-domain AS federation** — an agent's AS can call a resource's AS
+- **Cross-domain federation** — an agent's PS can call a resource's AS
 - **Agent as audience** — SSO and first-party access use the same flow
 - **No refresh tokens** — expired tokens + signatures are sufficient for renewal
 
