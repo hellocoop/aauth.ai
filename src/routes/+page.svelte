@@ -83,11 +83,11 @@ ${participants}
 			diagram: `sequenceDiagram
 ${participants}
     A->>R: HTTPSig w/ agent token
-    R-->>A: 202<br/>(interaction required)
+    R-->>A: 202\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0<br/>(interaction required)
     Note over A,R: user completes interaction
     A->>R: GET pending URL
-    R-->>A: 200 OK<br/>AAuth-Access:<br/>opaque-token
-    A->>R: HTTPSig w/ agent token<br/>Authorization:<br/>AAuth opaque-token
+    R-->>A: 200 OK\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0<br/>AAuth-Access:<br/>opaque-token\u00A0\u200D
+    A->>R: HTTPSig w/ agent token<br/>Authorization:\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0<br/>AAuth opaque-token\u00A0\u00A0\u00A0\u00A0\u200D
     R-->>A: 200 OK`
 		},
 		{
@@ -96,11 +96,11 @@ ${participants}
 			desc: 'Resource issues a resource token. PS issues an auth token carrying user identity and scope.',
 			diagram: `sequenceDiagram
 ${participants}
-    A->>R: HTTPSig w/ agent token<br/>POST /authorize
+    A->>R: HTTPSig w/ agent token<br/>POST /authorize\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u200D
     R-->>A: resource_token<br/>(aud = PS URL)
-    A->>P: HTTPSig w/ agent token<br/>POST /token<br/>w/ resource_token
+    A->>P: HTTPSig w/ agent token<br/>POST /token\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0<br/>w/ resource_token\u00A0\u00A0\u00A0\u00A0\u00A0\u200D
     P-->>A: auth_token
-    A->>R: HTTPSig w/ auth_token<br/>GET /api/documents
+    A->>R: HTTPSig w/ auth_token<br/>GET /api/documents\u00A0\u00A0\u00A0\u200D
     R-->>A: 200 OK`
 		},
 		{
@@ -109,13 +109,13 @@ ${participants}
 			desc: 'Resource has its own Access Server. PS federates with AS to obtain the auth token across trust domains.',
 			diagram: `sequenceDiagram
 ${participants}
-    A->>R: HTTPSig w/ agent token<br/>POST /authorize
+    A->>R: HTTPSig w/ agent token<br/>POST /authorize\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u200D
     R-->>A: resource_token<br/>(aud = AS URL)
-    A->>P: HTTPSig w/ agent token<br/>POST /token<br/>w/ resource_token
-    P->>S: HTTPSig w/ jwks_uri<br/>POST /token<br/>w/ resource_token
+    A->>P: HTTPSig w/ agent token<br/>POST /token\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0<br/>w/ resource_token\u00A0\u00A0\u00A0\u00A0\u00A0\u200D
+    P->>S: HTTPSig w/ jwks_uri<br/>POST /token\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0<br/>w/ resource_token\u00A0\u00A0\u200D
     S-->>P: auth_token
     P-->>A: auth_token
-    A->>R: HTTPSig w/ auth_token<br/>GET /api/documents
+    A->>R: HTTPSig w/ auth_token<br/>GET /api/documents\u00A0\u00A0\u00A0\u200D
     R-->>A: 200 OK`
 		}
 	];
@@ -336,34 +336,43 @@ ${participants}
 		</InView>
 
 		<InView>
-			<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-				<div class="p-6 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)]">
-					<h3 class="font-semibold mb-4">API Keys</h3>
-					<dl class="space-y-3 text-sm">
-						<div><dt class="text-[var(--color-text-dim)]">Registration</dt><dd>Per service</dd></div>
-						<div><dt class="text-[var(--color-text-dim)]">Credential</dt><dd>Shared secret</dd></div>
-						<div><dt class="text-[var(--color-text-dim)]">Presentation</dt><dd>Bearer</dd></div>
-						<div><dt class="text-[var(--color-text-dim)]">User delegation</dt><dd>None</dd></div>
-					</dl>
-				</div>
-				<div class="p-6 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)]">
-					<h3 class="font-semibold mb-4">OAuth 2.0 / OIDC</h3>
-					<dl class="space-y-3 text-sm">
-						<div><dt class="text-[var(--color-text-dim)]">Registration</dt><dd>Per authorization server</dd></div>
-						<div><dt class="text-[var(--color-text-dim)]">Credential</dt><dd>Client secret or PKCE + bearer token</dd></div>
-						<div><dt class="text-[var(--color-text-dim)]">Presentation</dt><dd>Bearer (DPoP optional)</dd></div>
-						<div><dt class="text-[var(--color-text-dim)]">User delegation</dt><dd>Through the AS</dd></div>
-					</dl>
-				</div>
-				<div class="border-flow p-6 rounded-xl border border-transparent bg-[var(--color-bg-card)]">
-					<h3 class="font-semibold mb-4 text-[var(--color-accent)]">AAuth</h3>
-					<dl class="space-y-3 text-sm">
-						<div><dt class="text-[var(--color-text-dim)]">Registration</dt><dd>None — self-published</dd></div>
-						<div><dt class="text-[var(--color-text-dim)]">Credential</dt><dd>Agent's own signing key</dd></div>
-						<div><dt class="text-[var(--color-text-dim)]">Presentation</dt><dd>HTTP Message Signature</dd></div>
-						<div><dt class="text-[var(--color-text-dim)]">User delegation</dt><dd>Per-request via PS / AS</dd></div>
-					</dl>
-				</div>
+			<div class="overflow-x-auto rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)]">
+				<table class="w-full text-sm">
+					<thead>
+						<tr class="border-b border-[var(--color-border)]">
+							<th class="text-left p-4 text-[var(--color-text-dim)] font-medium uppercase tracking-wider text-xs"></th>
+							<th class="text-left p-4 font-semibold">API Keys</th>
+							<th class="text-left p-4 font-semibold">OAuth 2.0 / OIDC</th>
+							<th class="text-left p-4 font-semibold text-[var(--color-accent)]">AAuth</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr class="border-b border-[var(--color-border)]">
+							<td class="p-4 text-[var(--color-text-dim)] font-medium">Registration</td>
+							<td class="p-4">Per service</td>
+							<td class="p-4">Per authorization server</td>
+							<td class="p-4 text-[var(--color-text)]">None — self-published</td>
+						</tr>
+						<tr class="border-b border-[var(--color-border)]">
+							<td class="p-4 text-[var(--color-text-dim)] font-medium">Credential</td>
+							<td class="p-4">Shared secret</td>
+							<td class="p-4">Client secret or PKCE + bearer token</td>
+							<td class="p-4 text-[var(--color-text)]">Agent's own signing key</td>
+						</tr>
+						<tr class="border-b border-[var(--color-border)]">
+							<td class="p-4 text-[var(--color-text-dim)] font-medium">Presentation</td>
+							<td class="p-4">Bearer</td>
+							<td class="p-4">Bearer (DPoP optional)</td>
+							<td class="p-4 text-[var(--color-text)]">HTTP Message Signature</td>
+						</tr>
+						<tr>
+							<td class="p-4 text-[var(--color-text-dim)] font-medium">User delegation</td>
+							<td class="p-4">None</td>
+							<td class="p-4">Through the AS</td>
+							<td class="p-4 text-[var(--color-text)]">Per-request via PS / AS</td>
+						</tr>
+					</tbody>
+				</table>
 			</div>
 			<p class="text-xs text-center text-[var(--color-text-dim)] mt-4 font-mono">
 				PS = Person Server &middot; AS = Access Server

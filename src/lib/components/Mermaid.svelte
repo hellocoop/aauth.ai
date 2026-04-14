@@ -28,7 +28,10 @@
 					boxMargin: 8,
 					noteMargin: 8,
 					mirrorActors: false,
-					wrap: false
+					wrap: false,
+					messageFontFamily: 'JetBrains Mono, monospace',
+					noteFontFamily: 'JetBrains Mono, monospace',
+					actorFontFamily: 'JetBrains Mono, monospace'
 				},
 				themeVariables: {
 					background: '#1a1a25',
@@ -105,6 +108,7 @@
 			const targetW = Math.max(vb.width, 1200);
 			svgEl.setAttribute('viewBox', `${vb.x} ${vb.y} ${targetW} ${targetH}`);
 			svgEl.setAttribute('height', String(targetH));
+
 
 		});
 	});
