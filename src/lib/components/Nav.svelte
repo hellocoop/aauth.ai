@@ -23,7 +23,6 @@
 	const links = [
 		{ href: '#compare', label: 'Why AAuth' },
 		{ href: '#how-it-works', label: 'How It Works' },
-		{ href: '#specs', label: 'Specs' },
 		{ href: '#get-started', label: 'Get Started' }
 	];
 </script>

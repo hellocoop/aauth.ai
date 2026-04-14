@@ -57,9 +57,30 @@ export default {
 	async fetch(request, env) {
 		const url = new URL(request.url);
 
-		// llms.txt is always served from static assets (no negotiation)
+		// llms.txt is always served from static assets (no negotiation);
+		// rewrite Content-Type so browsers treat it as UTF-8 and em-dashes render correctly.
 		if (url.pathname === '/llms.txt') {
-			return env.ASSETS.fetch(request);
+			const res = await env.ASSETS.fetch(request);
+			const headers = new Headers(res.headers);
+			headers.set('Content-Type', 'text/plain; charset=utf-8');
+			return new Response(res.body, { status: res.status, headers });
+		}
+
+		// Direct access to markdown content (e.g. /home.md) — always returns the R2 copy,
+		// no Accept negotiation needed. Makes the markdown URL shareable.
+		if (url.pathname.endsWith('.md')) {
+			const key = url.pathname.replace(/^\//, '');
+			const object = await env.CONTENT.get(key);
+			if (object) {
+				return new Response(object.body, {
+					headers: {
+						'Content-Type': 'text/markdown; charset=utf-8',
+						'Content-Signal': 'ai-train=yes, search=yes, ai-input=yes',
+						'Cache-Control': 'public, max-age=3600',
+						'ETag': object.httpEtag,
+					},
+				});
+			}
 		}
 
 		// If the client wants markdown, try R2

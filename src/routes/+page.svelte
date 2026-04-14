@@ -174,6 +174,13 @@ ${participants}
 			href: 'https://playground.aauth.dev',
 			available: true
 		},
+		{
+			name: 'Specifications',
+			icon: 'github',
+			desc: 'The Internet-Drafts defining the AAuth protocol and signatures.',
+			href: 'https://github.com/dickhardt/AAuth',
+			available: true
+		}
 	];
 
 	const deepDives = [
@@ -375,7 +382,7 @@ ${participants}
 				</table>
 			</div>
 			<p class="text-xs text-center text-[var(--color-text-dim)] mt-4 font-mono">
-				PS = Person Server &middot; AS = Access Server
+				<span class="text-[var(--color-text-muted)]">PS</span> Person Server &middot; <span class="text-[var(--color-text-muted)]">AS</span> Access Server
 			</p>
 		</InView>
 	</div>
@@ -436,13 +443,13 @@ ${participants}
 					</div>
 				</div>
 			</div>
-			<div class="mt-4 text-xs text-center text-[var(--color-text-dim)] space-y-1 font-mono">
-				<p>
-					<span class="text-[var(--color-text-muted)]">agent_token</span> establishes the agent's identity &middot;
-					<span class="text-[var(--color-text-muted)]">resource_token</span> describes the access needed &middot;
-					<span class="text-[var(--color-text-muted)]">auth_token</span> grants an agent access to a resource
-				</p>
-				<p>PS = Person Server &middot; AS = Access Server</p>
+			<div class="mt-4 flex justify-center">
+				<ul class="text-xs text-left text-[var(--color-text-dim)] space-y-1 font-mono list-none">
+					<li><span class="text-[var(--color-text-muted)]">agent_token</span> establishes the agent's identity</li>
+					<li><span class="text-[var(--color-text-muted)]">resource_token</span> describes the access needed</li>
+					<li><span class="text-[var(--color-text-muted)]">auth_token</span> grants an agent access to a resource</li>
+					<li><span class="text-[var(--color-text-muted)]">PS</span> Person Server &middot; <span class="text-[var(--color-text-muted)]">AS</span> Access Server</li>
+				</ul>
 			</div>
 		</InView>
 	</div>
@@ -467,66 +474,6 @@ ${participants}
 -->
 
 
-<!-- Specifications -->
-<section id="specs" class="py-14 md:py-24 px-6">
-	<div class="max-w-4xl mx-auto">
-		<InView>
-			<h2 class="text-3xl md:text-4xl font-bold text-center mb-4 uppercase">Specifications</h2>
-			<p class="text-center text-[var(--color-text-muted)] max-w-3xl mx-auto mb-12 text-lg">
-				<span class="text-[var(--color-text)]">AAuth Protocol</span> defines tokens, access modes, and federation. It builds on <span class="text-[var(--color-text)] whitespace-nowrap">HTTP Signature Keys</span> for key conveyance and message signatures.
-			</p>
-		</InView>
-
-		<div
-			bind:this={layersEl}
-			class="space-y-4 max-w-3xl mx-auto"
-			onmousemove={(e) => {
-				const cards = e.currentTarget.querySelectorAll('.glow-card');
-				cards.forEach((card) => {
-					const r = card.getBoundingClientRect();
-					card.style.setProperty('--mx', `${e.clientX - r.left}px`);
-					card.style.setProperty('--my', `${e.clientY - r.top}px`);
-					const dx = Math.max(r.left - e.clientX, 0, e.clientX - r.right);
-					const dy = Math.max(r.top - e.clientY, 0, e.clientY - r.bottom);
-					card.style.setProperty('--glow-opacity', Math.hypot(dx, dy) < 120 ? '1' : '0');
-				});
-			}}
-			onmouseleave={(e) => {
-				e.currentTarget.querySelectorAll('.glow-card').forEach((c) => {
-					c.style.setProperty('--glow-opacity', '0');
-				});
-			}}
-		>
-			{#each specs as spec, i}
-				{@const delay = i * 150}
-				<a
-					href={spec.href}
-					target="_blank"
-					rel="noopener"
-					class="glow-card block rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)] transition-transform duration-200 no-underline hover:scale-[1.02]
-						{spec.indent ? 'ml-8 md:ml-12' : ''}
-						{layersVisible ? 'spec-reveal' : 'opacity-0'}"
-					style="--reveal-delay: {delay}ms"
-				>
-					<div class="px-6 py-5">
-						<div class="flex items-center justify-between mb-2">
-							<span class="font-semibold {spec.primary ? 'text-lg' : ''}">{spec.name}</span>
-							<span
-								class="text-xs font-medium px-2.5 py-1 rounded-full
-									{spec.status === 'Internet-Draft'
-									? 'bg-blue-500/10 text-blue-400'
-									: 'bg-amber-500/10 text-amber-400'}"
-							>
-								{spec.status}
-							</span>
-						</div>
-						<p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{spec.desc}</p>
-					</div>
-				</a>
-			{/each}
-		</div>
-	</div>
-</section>
 
 <!-- Get Started -->
 <section id="get-started" class="py-14 md:py-24 px-6">
@@ -539,7 +486,7 @@ ${participants}
 		</InView>
 
 		<div
-			class="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-4xl mx-auto"
+			class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-3xl mx-auto"
 			onmousemove={(e) => {
 				const cards = e.currentTarget.querySelectorAll('.glow-card');
 				cards.forEach((card) => {
@@ -595,9 +542,9 @@ ${participants}
 <section class="py-14 md:py-24 px-6">
 	<div class="max-w-4xl mx-auto">
 		<InView>
-			<h2 class="text-3xl md:text-4xl font-bold text-center mb-4 uppercase">Deep Dives</h2>
+			<h2 class="text-3xl md:text-4xl font-bold text-center mb-4 uppercase">From the Community</h2>
 			<p class="text-center text-[var(--color-text-muted)] max-w-2xl mx-auto mb-12 text-lg">
-				Articles and demos from the community.
+				Articles, demos, and perspectives.
 			</p>
 		</InView>
 
@@ -652,26 +599,6 @@ ${participants}
 	</div>
 </section>
 
-<!-- Contribute -->
-<section class="py-12 md:py-20 px-6">
-	<div class="max-w-3xl mx-auto text-center">
-		<InView>
-			<h2 class="text-2xl md:text-3xl font-bold mb-3 uppercase">Contribute</h2>
-			<p class="text-[var(--color-text-muted)] mb-6">
-				See something to improve?
-			</p>
-			<a
-				href="https://github.com/hellocoop/aauth.dev/edit/main/src/routes/+page.svelte"
-				target="_blank"
-				rel="noopener"
-				onmouseenter={() => issueTrigger++}
-				class="text-sm text-[var(--color-accent)] hover:underline"
-			>
-				<DecryptText text="Edit this page on GitHub ↗" trigger={issueTrigger} />
-			</a>
-		</InView>
-	</div>
-</section>
 
 <!-- Footer -->
 <footer class="py-16 px-6 border-t border-[var(--color-border)]">
@@ -686,24 +613,10 @@ ${participants}
 					Founding sponsor: <a href="https://www.linkedin.com/in/geffenpo/" target="_blank" rel="noopener" class="hover:text-white transition-colors">Geffen Posner</a>
 				</p>
 			</div>
-			<div class="flex gap-12 text-sm flex-wrap">
-				<div class="space-y-3">
-					<h4 class="font-semibold text-[var(--color-text-dim)] uppercase tracking-wider text-xs">Learn</h4>
-					<a href="#compare" class="block text-[var(--color-text-muted)] hover:text-white transition-colors no-underline">Why AAuth</a>
-					<a href="#how-it-works" class="block text-[var(--color-text-muted)] hover:text-white transition-colors no-underline">How It Works</a>
-					<a href="#specs" class="block text-[var(--color-text-muted)] hover:text-white transition-colors no-underline">Specifications</a>
-				</div>
-				<div class="space-y-3">
-					<h4 class="font-semibold text-[var(--color-text-dim)] uppercase tracking-wider text-xs">Get Started</h4>
-					<a href="https://github.com/hellocoop/AAuth" target="_blank" rel="noopener" class="block text-[var(--color-text-muted)] hover:text-white transition-colors no-underline">Node.js / TypeScript ↗</a>
-					<a href="https://github.com/christian-posta/aauth-full-demo" target="_blank" rel="noopener" class="block text-[var(--color-text-muted)] hover:text-white transition-colors no-underline">Python ↗</a>
-					<a href="https://playground.aauth.dev" target="_blank" rel="noopener" class="block text-[var(--color-text-muted)] hover:text-white transition-colors no-underline">Playground ↗</a>
-				</div>
-				<div class="space-y-3">
-					<h4 class="font-semibold text-[var(--color-text-dim)] uppercase tracking-wider text-xs">Site</h4>
-					<a href="/llms.txt" class="block text-[var(--color-text-muted)] hover:text-white transition-colors no-underline font-mono">llms.txt</a>
-					<a href="https://github.com/hellocoop/aauth.dev/edit/main/src/routes/+page.svelte" target="_blank" rel="noopener" class="block text-[var(--color-text-muted)] hover:text-white transition-colors no-underline">Edit this page ↗</a>
-				</div>
+			<div class="flex items-center gap-5 text-sm flex-wrap">
+				<a href="/llms.txt" class="text-[var(--color-text-muted)] hover:text-white transition-colors no-underline font-mono">llms.txt</a>
+				<a href="/home.md" class="text-[var(--color-text-muted)] hover:text-white transition-colors no-underline font-mono">home.md</a>
+				<a href="https://github.com/hellocoop/aauth.dev/edit/main/src/routes/+page.svelte" target="_blank" rel="noopener" class="text-[var(--color-text-muted)] hover:text-white transition-colors no-underline">Edit this page ↗</a>
 			</div>
 		</div>
 	</div>
