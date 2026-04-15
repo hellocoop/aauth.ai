@@ -10,7 +10,11 @@
 	<meta property="og:url" content="https://www.aauth.dev" />
 	<meta property="og:title" content="AAuth — Agent Identity, Resource Access, and User Delegation" />
 	<meta property="og:description" content="Every agent gets its own cryptographic identity, verifiable by any party without pre-registration or shared secrets." />
+	<meta property="og:image" content="https://www.aauth.dev/og.png" />
+	<meta property="og:image:width" content="1200" />
+	<meta property="og:image:height" content="630" />
 	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:image" content="https://www.aauth.dev/og.png" />
 </svelte:head>
 
 {@render children()}
