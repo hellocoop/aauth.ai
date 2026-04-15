@@ -448,7 +448,7 @@ ${participants}
 					</tbody>
 				</table>
 			</div>
-			<p class="text-xs text-center text-[var(--color-text-dim)] mt-4 font-mono">
+			<p class="text-xs text-left md:text-center text-[var(--color-text-dim)] mt-4 font-mono">
 				<span class="text-[var(--color-text-muted)]">PS</span> Person Server &middot; <span class="text-[var(--color-text-muted)]">AS</span> Access Server
 			</p>
 		</InView>
