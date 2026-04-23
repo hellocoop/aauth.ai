@@ -30,36 +30,57 @@
 
 	const features = [
 		{
-			title: 'No Pre-Registration',
-			desc: 'Agents self-publish identity at HTTPS URLs. Any agent can interact with any resource on first contact.',
+			title: "Client IDs Don't Travel",
+			desc: 'In OAuth and OIDC, a client has no independent identity — a client_id at Google is meaningless at GitHub. Identity has to travel with the client itself, not be reissued at each service.',
 			color: 'var(--color-agent)'
 		},
 		{
-			title: 'Proof of Possession',
-			desc: 'Every request is signed with HTTP Message Signatures. Stolen tokens are worthless without the signing key.',
+			title: 'Copied Secrets Leak',
+			desc: "API keys are a shared secret issued by the service and copied to the client. Any secret copied to where the workload runs will eventually be copied somewhere it shouldn’t be.",
 			color: 'var(--color-resource)'
 		},
 		{
-			title: 'Async by Design',
-			desc: '202 Accepted + polling handles consent, approvals, clarification chat, and headless agents. One pattern.',
+			title: 'Decisions Happen Mid-Task',
+			desc: 'Software now needs authorization decisions mid-task — long after the user set it in motion. Consent and approval arrive on human timelines. Pending has to be a first-class state.',
 			color: 'var(--color-ps)'
 		},
 		{
-			title: 'Tool-Call Governance',
-			desc: 'A server representing the user decides which tools the agent may call and audits every call — no resource involved.',
+			title: 'Tool Calls Need Governance',
+			desc: "Software composes its tool chain at runtime. A user can’t mediate each call — a server representing them has to decide which tools may be invoked and audit every one.",
 			color: 'var(--color-as)'
 		},
 		{
-			title: 'Missions',
-			desc: 'The agent states what it intends to do. The user reviews, clarifies, and approves. Every access is evaluated in that context.',
+			title: 'Requests Carry Intent',
+			desc: "Policy needs to know what the caller is trying to do, not just which endpoints it wants. Intent has to travel in the request, so every access can be evaluated in context.",
 			color: 'var(--color-ps)'
 		},
 		{
-			title: 'Cross-Domain Federation',
-			desc: 'Authorization crosses trust domains seamlessly — the agent never has to know about each separate server.',
+			title: 'Calls Cross Trust Domains',
+			desc: 'A single request now touches resources across orgs, clouds, identity domains. Enterprise workload identity (SPIFFE) stops at the trust-domain edge — authority has to federate across them.',
 			color: 'var(--color-agent)'
 		}
 	];
+
+	const demos = [
+		{
+			name: 'whoami.aauth.dev',
+			logo: '/demos/whoami.png',
+			desc: 'A minimal AAuth identity resource. Sign a request, release identity claims.',
+			playground: 'https://playground.aauth.dev',
+			metadata: 'https://whoami.aauth.dev/.well-known/aauth-resource.json',
+			source: 'https://github.com/aauth-dev/whoami'
+		},
+		{
+			name: 'notes.aauth.dev',
+			logo: '/demos/notes.png',
+			desc: 'An OpenAPI notes API where agents declare which operations they need — not scopes. Consent is over what the caller can do, not the endpoints it hits.',
+			playground: 'https://playground.aauth.dev',
+			metadata: 'https://notes.aauth.dev/.well-known/aauth-resource.json',
+			source: 'https://github.com/aauth-dev/r3demo'
+		}
+	];
+
+	let demoTriggers = $state([0, 0]);
 
 	const participants = `    participant A as Agent
     participant R as Resource
@@ -214,7 +235,7 @@ ${participants}
 			available: true
 		},
 		{
-			name: 'Python',
+			name: 'Python Demo',
 			icon: 'python',
 			desc: 'End-to-end A2A multi-agent demo with Keycloak and user consent.',
 			href: 'https://github.com/christian-posta/aauth-full-demo',
@@ -293,7 +314,7 @@ ${participants}
 			HTTP Clients Need <span class="text-[var(--color-accent)]">Their Own Identity</span>
 		</h1>
 		<p class="text-xl md:text-2xl text-[var(--color-text-muted)] max-w-3xl mx-auto mb-12 leading-relaxed">
-			AAuth gives every agent its own cryptographic identity.<br class="hidden sm:inline" />
+			AAuth gives every HTTP client its own cryptographic identity.<br class="hidden sm:inline" />
 			No pre-registration. No shared secrets. No bearer tokens.
 		</p>
 		<!-- <p class="text-lg text-[var(--color-text-dim)] max-w-2xl mx-auto mb-12 leading-relaxed">
@@ -338,18 +359,18 @@ ${participants}
 <section id="compare" class="py-14 md:py-24 px-6">
 	<div class="max-w-6xl mx-auto">
 		<InView>
-			<h2 class="text-3xl md:text-4xl font-bold text-center mb-4 uppercase">Agents Are Different</h2>
+			<h2 class="text-3xl md:text-4xl font-bold text-center mb-4 uppercase">Software Is Changing</h2>
 			<p class="text-center text-[var(--color-text-muted)] max-w-4xl mx-auto mb-16 text-lg">
-				Agents discover resources at runtime and need authorization mid-task.<br class="hidden sm:inline" />
-				Protocols built for pre-registered clients with fixed integrations can't keep up.
+				Software used to know at build time what it would call and what it would need.<br class="hidden sm:inline" />
+				Now models write, agents compose, tool chains assemble at runtime — old protocols don't fit.
 			</p>
 		</InView>
 
 		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
 			{#each features as feature, i}
-				<InView class="delay-{i}">
+				<InView class="delay-{i} h-full">
 					<div
-						class="p-6 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)]"
+						class="h-full p-6 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)]"
 					>
 						<h3 class="text-lg font-semibold mb-2 font-mono"><span class="text-[var(--color-accent)]">&gt;</span> {feature.title}</h3>
 						<p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{feature.desc}</p>
@@ -357,6 +378,12 @@ ${participants}
 				</InView>
 			{/each}
 		</div>
+
+		<InView>
+			<p class="text-center text-[var(--color-text-muted)] max-w-3xl mx-auto mt-16 text-lg">
+				What's needed is <span class="text-[var(--color-text)]">internet-scale workload identity with user-delegated access</span> — open-world, no single authorization server required.
+			</p>
+		</InView>
 	</div>
 </section>
 
@@ -459,9 +486,9 @@ ${participants}
 	<div class="max-w-6xl mx-auto">
 		<InView>
 			<h2 class="text-3xl md:text-4xl font-bold text-center mb-4 uppercase">How AAuth Works</h2>
-			<p class="text-center text-[var(--color-text-muted)] max-w-2xl mx-auto mb-4 text-lg">
-				Four access modes. Each adds parties and capabilities.<br class="hidden sm:inline" />
-				Adoption does not require coordination between parties.
+			<p class="text-center text-[var(--color-text-muted)] max-w-3xl mx-auto mb-4 text-lg">
+				Four access modes that answer the six problems above. The simplest replaces API keys; each adds parties and capabilities.<br class="hidden sm:inline" />
+				A resource adopts any mode independently — no coordination required.
 			</p>
 		</InView>
 
@@ -484,6 +511,16 @@ ${participants}
 				<span class="text-xs font-mono text-[var(--color-text-dim)] hidden sm:inline">&rarr; most capable</span>
 			</div>
 
+
+			<div class="max-w-4xl mx-auto mb-4 flex justify-center">
+				<ul class="text-xs text-left text-[var(--color-text-dim)] space-y-1 font-mono list-none">
+					<li><span class="text-[var(--color-text-muted)]">agent_token</span> establishes the agent's identity</li>
+					<li><span class="text-[var(--color-text-muted)]">resource_token</span> describes the access needed</li>
+					<li><span class="text-[var(--color-text-muted)]">auth_token</span> grants an agent access to a resource</li>
+					<li><span class="text-[var(--color-text-muted)]">jwks_uri</span> PS's JWKS endpoint, discovered via well-known metadata</li>
+					<li><span class="text-[var(--color-text-muted)]">PS</span> Person Server &middot; <span class="text-[var(--color-text-muted)]">AS</span> Access Server</li>
+				</ul>
+			</div>
 
 			<div class="max-w-4xl mx-auto">
 				<div class="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)] overflow-hidden">
@@ -537,15 +574,6 @@ ${participants}
 					</div>
 				</div>
 			</div>
-			<div class="mt-4 flex justify-center">
-				<ul class="text-xs text-left text-[var(--color-text-dim)] space-y-1 font-mono list-none">
-					<li><span class="text-[var(--color-text-muted)]">agent_token</span> establishes the agent's identity</li>
-					<li><span class="text-[var(--color-text-muted)]">resource_token</span> describes the access needed</li>
-					<li><span class="text-[var(--color-text-muted)]">auth_token</span> grants an agent access to a resource</li>
-					<li><span class="text-[var(--color-text-muted)]">jwks_uri</span> PS's JWKS endpoint, discovered via well-known metadata</li>
-					<li><span class="text-[var(--color-text-muted)]">PS</span> Person Server &middot; <span class="text-[var(--color-text-muted)]">AS</span> Access Server</li>
-				</ul>
-			</div>
 		</InView>
 	</div>
 </section>
@@ -568,6 +596,45 @@ ${participants}
 </section>
 -->
 
+
+
+<!-- See It Running -->
+<section id="see-it-running" class="py-14 md:py-24 px-6">
+	<div class="max-w-6xl mx-auto">
+		<InView>
+			<h2 class="text-3xl md:text-4xl font-bold text-center mb-4 uppercase">See It Running</h2>
+			<p class="text-center text-[var(--color-text-muted)] max-w-3xl mx-auto mb-12 text-lg">
+				Two live resources that answer those six problems. Bootstrap an agent in the Playground and watch the flow — signed requests, PS-brokered consent, access granted.
+			</p>
+		</InView>
+
+		<div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
+			{#each demos as demo, i}
+				<InView class="h-full">
+					<div class="h-full p-6 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)] flex flex-col">
+						<h3 class="font-mono font-semibold mb-2 flex items-center gap-3">
+							<img src={demo.logo} alt="" width="32" height="32" class="inline-block" />
+							{demo.name}
+						</h3>
+						<p class="text-sm text-[var(--color-text-muted)] mb-5 leading-relaxed">{demo.desc}</p>
+						<div class="mt-auto flex flex-wrap gap-4 text-sm">
+							<a
+								href={demo.playground}
+								target="_blank"
+								rel="noopener"
+								onmouseenter={() => (demoTriggers[i] = demoTriggers[i] + 1)}
+								class="text-[var(--color-accent)] no-underline"
+							>
+								<DecryptText text="Try in Playground ↗" trigger={demoTriggers[i]} />
+							</a>
+							<a href={demo.source} target="_blank" rel="noopener" class="text-[var(--color-text-muted)] no-underline hover:underline">Source ↗</a>
+						</div>
+					</div>
+				</InView>
+			{/each}
+		</div>
+	</div>
+</section>
 
 
 <!-- Get Started -->
@@ -732,7 +799,7 @@ ${participants}
 			<div>
 				<span class="font-display font-bold text-lg">AAuth</span>
 				<p class="text-sm text-[var(--color-text-muted)] mt-2 max-w-xs">
-					Agent identity, resource access, and user delegation for open ecosystems.
+					Cryptographic identity, resource access, and user delegation — for every HTTP client.
 				</p>
 				<p class="text-sm text-[var(--color-text-muted)] mt-3">
 					Founding sponsor: <a href="https://www.linkedin.com/in/geffenpo/" target="_blank" rel="noopener" class="hover:text-white transition-colors">Geffen Posner</a>
