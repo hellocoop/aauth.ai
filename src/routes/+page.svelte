@@ -76,7 +76,7 @@
 			desc: 'An OpenAPI notes API where agents declare which operations they need — not scopes. Consent is over what the caller can do, not the endpoints it hits.',
 			playground: 'https://playground.aauth.dev',
 			metadata: 'https://notes.aauth.dev/.well-known/aauth-resource.json',
-			source: 'https://github.com/aauth-dev/r3demo'
+			source: 'https://github.com/aauth-dev/notes'
 		}
 	];
 
