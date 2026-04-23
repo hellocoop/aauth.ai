@@ -315,7 +315,7 @@ ${participants}
 		</h1>
 		<p class="text-xl md:text-2xl text-[var(--color-text-muted)] max-w-3xl mx-auto mb-12 leading-relaxed">
 			AAuth gives every HTTP client its own cryptographic identity.<br class="hidden sm:inline" />
-			No pre-registration. No shared secrets. No bearer tokens.
+			No pre-registration. No shared secrets. No replayable tokens.
 		</p>
 		<!-- <p class="text-lg text-[var(--color-text-dim)] max-w-2xl mx-auto mb-12 leading-relaxed">
 			A domain, static metadata, and a JWKS. That's it. This is the foundation
