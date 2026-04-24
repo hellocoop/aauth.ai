@@ -313,11 +313,11 @@ ${participants}
 		<h1 class="text-5xl md:text-7xl font-bold tracking-tight mb-6 leading-[1.1] uppercase">
 			Software Is <span class="text-[var(--color-accent)]">Changing</span>
 		</h1>
-		<p class="text-2xl md:text-4xl font-semibold text-[var(--color-text)] max-w-5xl mx-auto mb-8 leading-tight uppercase tracking-tight">
-			And HTTP Clients Need <span class="text-[var(--color-accent)]">Their Own Identity</span>
+		<p class="text-[24.5px] font-semibold text-[var(--color-text)] max-w-5xl mx-auto mb-8 leading-tight uppercase tracking-tight">
+			AI Writes Code. Agents Run It. Software Now Acts <span class="text-[var(--color-accent)]">On Its Own</span>.
 		</p>
 		<p class="text-xl md:text-2xl text-[var(--color-text-muted)] max-w-4xl mx-auto mb-12 leading-relaxed">
-			AAuth — no pre-registration, no shared secrets, no replayable tokens.
+			HTTP clients need their own identity.
 		</p>
 		<!-- <p class="text-lg text-[var(--color-text-dim)] max-w-2xl mx-auto mb-12 leading-relaxed">
 			A domain, static metadata, and a JWKS. That's it. This is the foundation
@@ -380,6 +380,29 @@ ${participants}
 				</InView>
 			{/each}
 		</div>
+	</div>
+</section>
+
+<!-- What Is AAuth? -->
+<section id="what-is-aauth" class="py-14 md:py-24 px-6">
+	<div class="max-w-3xl mx-auto">
+		<InView>
+			<h2 class="text-3xl md:text-4xl font-bold text-center mb-8 uppercase">What Is AAuth?</h2>
+			<div class="text-[var(--color-text-muted)] text-lg leading-relaxed space-y-5">
+				<p>
+					After implementing MCP authorization — and writing thousands of lines of "code in English" inspired by Andrej Karpathy's Software 3.0 talk — I concluded <a href="https://www.linkedin.com/feed/update/urn:li:activity:7358178115673616384/" target="_blank" rel="noopener" class="text-[var(--color-text)] font-medium hover:underline">OAuth is not a good fit for agents ↗</a>. Bearer tokens on client devices with no DPoP protection. Dynamic Client Registration we ended up circumventing entirely. Coarse-grained scopes that didn't match real-world access control needs. I drafted a Specification Enhancement Proposal, and worked with others in the identity community who'd hit the same walls.
+				</p>
+				<p>
+					AAuth is what came out of that work. It gives every HTTP client its own cryptographic identity and carries <span class="text-[var(--color-text)]">identity claims and authorization claims in the same token</span>. It coexists with OAuth 2.0 and OpenID Connect rather than replacing them.
+				</p>
+				<p>
+					The web gave servers identity. It's time clients got the same.
+				</p>
+			</div>
+			<p class="mt-6 text-base text-[var(--color-text-muted)] italic">
+				— <a href="https://www.linkedin.com/in/dickhardt" target="_blank" rel="noopener" class="text-[var(--color-text)] hover:text-white transition-colors not-italic">Dick Hardt</a>, author of OAuth 2.0
+			</p>
+		</InView>
 	</div>
 </section>
 
