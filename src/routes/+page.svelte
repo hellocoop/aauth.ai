@@ -89,6 +89,7 @@
 	];
 
 	let demoTriggers = $state([0, 0, 0]);
+	let lumaTrigger = $state(0);
 
 	const participants = `    participant A as Agent
     participant R as Resource
@@ -614,8 +615,8 @@ ${participants}
 			<p class="text-center text-[var(--color-text-muted)] max-w-2xl mx-auto mb-3 text-lg">
 				Try the protocol, explore the SDKs, and follow the conversation.
 			</p>
-			<p class="text-center text-sm text-[var(--color-text-dim)] italic max-w-3xl mx-auto mb-12">
-				The demos and Playground run against the Hello beta Person Server — data is reset regularly, so don't store anything you need to keep.
+			<p class="text-center text-lg text-[var(--color-text-dim)] italic max-w-3xl mx-auto mb-12">
+				The demos and Playground run against the Hellō Beta Person Server — data is reset regularly, so don't store anything you need to keep.
 			</p>
 		</InView>
 
@@ -765,7 +766,13 @@ ${participants}
 		<InView>
 			<h2 class="text-3xl md:text-4xl font-bold text-center mb-4 uppercase">Office Hours</h2>
 			<p class="text-center text-[var(--color-text-muted)] max-w-3xl mx-auto mb-10 text-lg">
-				Drop in to ask questions, share what you're building, or listen along. Sign up below or at <a href="https://lu.ma/aauth" target="_blank" rel="noopener" class="text-[var(--color-accent)] no-underline hover:underline">lu.ma/aauth</a>.
+				Drop in to ask questions, share what you're building, or listen along.<br class="hidden md:inline"/> Sign up below or at <a
+					href="https://lu.ma/aauth"
+					target="_blank"
+					rel="noopener"
+					onmouseenter={() => (lumaTrigger = lumaTrigger + 1)}
+					class="text-[var(--color-accent)] no-underline"
+				><DecryptText text="lu.ma/aauth ↗" trigger={lumaTrigger} /></a>.
 			</p>
 		</InView>
 		<InView>
