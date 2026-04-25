@@ -611,8 +611,11 @@ ${participants}
 	<div class="max-w-6xl mx-auto">
 		<InView>
 			<h2 class="text-3xl md:text-4xl font-bold text-center mb-4 uppercase">Explore AAuth</h2>
-			<p class="text-center text-[var(--color-text-muted)] max-w-2xl mx-auto mb-12 text-lg">
+			<p class="text-center text-[var(--color-text-muted)] max-w-2xl mx-auto mb-3 text-lg">
 				Try the protocol, explore the SDKs, and follow the conversation.
+			</p>
+			<p class="text-center text-sm text-[var(--color-text-dim)] italic max-w-3xl mx-auto mb-12">
+				The demos and Playground run against the Hello beta Person Server — data is reset regularly, so don't store anything you need to keep.
 			</p>
 		</InView>
 
@@ -750,6 +753,31 @@ ${participants}
 						</p>
 					</a>
 				{/each}
+			</div>
+		</InView>
+	</div>
+</section>
+
+
+<!-- Office Hours -->
+<section id="office-hours" class="py-14 md:py-24 px-6">
+	<div class="max-w-4xl mx-auto">
+		<InView>
+			<h2 class="text-3xl md:text-4xl font-bold text-center mb-4 uppercase">Office Hours</h2>
+			<p class="text-center text-[var(--color-text-muted)] max-w-3xl mx-auto mb-10 text-lg">
+				Drop in to ask questions, share what you're building, or listen along. Sign up below or at <a href="https://lu.ma/aauth" target="_blank" rel="noopener" class="text-[var(--color-accent)] no-underline hover:underline">lu.ma/aauth</a>.
+			</p>
+		</InView>
+		<InView>
+			<div class="max-w-[600px] mx-auto rounded-xl overflow-hidden border border-[var(--color-border)] bg-[var(--color-bg-card)]">
+				<iframe
+					src="https://luma.com/embed/calendar/cal-nXUxsqTY2ZQgy3b/events?lt=dark"
+					width="600"
+					height="450"
+					style="border: 0; width: 100%; display: block;"
+					allowfullscreen
+					title="AAuth Office Hours calendar"
+				></iframe>
 			</div>
 		</InView>
 	</div>

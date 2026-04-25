@@ -58,9 +58,36 @@ AAuth supports four resource access modes, each adding parties and capabilities:
 | Python | [github.com/christian-posta/aauth-full-demo](https://github.com/christian-posta/aauth-full-demo) |
 | Java (Keycloak) | [github.com/christian-posta/keycloak-aauth-extension](https://github.com/christian-posta/keycloak-aauth-extension) |
 
+## npm Packages
+
+The `@aauth` org on npm publishes building blocks for agents and MCP servers (current version 0.8.1):
+
+| Package | Description |
+|---------|-------------|
+| [@aauth/bootstrap](https://www.npmjs.com/package/@aauth/bootstrap) | CLI for bootstrapping AAuth agent keys and configuration |
+| [@aauth/fetch](https://www.npmjs.com/package/@aauth/fetch) | CLI for making AAuth-authenticated HTTP requests |
+| [@aauth/local-keys](https://www.npmjs.com/package/@aauth/local-keys) | Manage AAuth agent signing keys across hardware and software backends |
+| [@aauth/hardware-keys](https://www.npmjs.com/package/@aauth/hardware-keys) | Hardware key backends — YubiKey PIV and macOS Secure Enclave |
+| [@aauth/mcp-agent](https://www.npmjs.com/package/@aauth/mcp-agent) | Authenticated MCP transport with HTTP Signatures for AAuth agents |
+| [@aauth/mcp-server](https://www.npmjs.com/package/@aauth/mcp-server) | Server-side building blocks — challenge headers, interaction management, resource tokens |
+| [@aauth/mcp-stdio](https://www.npmjs.com/package/@aauth/mcp-stdio) | Stdio-to-HTTP proxy for MCP with AAuth signatures |
+| [@aauth/mcp-openclaw](https://www.npmjs.com/package/@aauth/mcp-openclaw) | OpenClaw plugin for AAuth-authenticated MCP server connections |
+
+## Try It
+
+- [Playground](https://playground.aauth.dev) — Interactive sandbox for driving AAuth flows against live endpoints
+- [Protocol Explorer](https://explorer.aauth.dev) — Browse access modes, tokens, and headers with side-by-side wire examples
+- [whoami.aauth.dev](https://whoami.aauth.dev) — Minimal AAuth identity resource demo
+- [notes.aauth.dev](https://notes.aauth.dev) — Notes API using AAuth R3; agents declare OpenAPI operations and consent is over actions, not endpoints
+
+The demos and Playground run against the Hello beta Person Server; data is reset regularly.
+
+## Community
+
+- [Office Hours](https://lu.ma/aauth) — Open community calls; ask questions, share what you're building, or listen along
+
 ## Links
 
 - [AAuth Website](https://www.aauth.dev)
-- [Playground](https://playground.aauth.dev)
 - [Specification Source (GitHub)](https://github.com/dickhardt/AAuth)
 - [Website Source (GitHub)](https://github.com/hellocoop/aauth.dev)
