@@ -20,7 +20,8 @@
 	const links = [
 		{ href: '#why-aauth', label: 'Why AAuth' },
 		{ href: '#how-it-works', label: 'How It Works' },
-		{ href: '#get-started', label: 'Explore AAuth' }
+		{ href: '#get-started', label: 'Explore AAuth' },
+		{ href: '#community', label: 'Community' }
 	];
 </script>
 
@@ -44,14 +45,6 @@
 			{#each links as link}
 				<a href={link.href} class="text-[var(--color-text-muted)] hover:text-white transition-colors no-underline">{link.label}</a>
 			{/each}
-			<a
-				href="https://join.slack.com/t/ietf/shared_invite/zt-3wlnl6g9t-UF~rAQwk06nNJUM6QtaaPg"
-				target="_blank"
-				rel="noopener"
-				class="text-[var(--color-text-muted)] hover:text-white transition-colors no-underline"
-			>
-				Slack ↗
-			</a>
 		</div>
 
 		<button
@@ -87,15 +80,6 @@
 					{link.label}
 				</a>
 			{/each}
-			<a
-				href="https://join.slack.com/t/ietf/shared_invite/zt-3wlnl6g9t-UF~rAQwk06nNJUM6QtaaPg"
-				target="_blank"
-				rel="noopener"
-				onclick={() => (menuOpen = false)}
-				class="text-lg py-3 text-[var(--color-text)] no-underline"
-			>
-				Slack ↗
-			</a>
 		</div>
 	</div>
 {/if}

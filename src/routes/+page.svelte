@@ -222,13 +222,6 @@ ${participants}
 			available: true
 		},
 		{
-			name: 'Slack Channel',
-			iconPathFilled: 'M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 0 1-2.521-2.52A2.528 2.528 0 0 1 8.834 0a2.528 2.528 0 0 1 2.521 2.522v2.52H8.834zM8.834 6.313a2.528 2.528 0 0 1 2.521 2.521 2.528 2.528 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312zM18.956 8.834a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.834a2.528 2.528 0 0 1-2.522 2.521h-2.522V8.834zM17.688 8.834a2.528 2.528 0 0 1-2.523 2.521 2.527 2.527 0 0 1-2.52-2.521V2.522A2.527 2.527 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.312zM15.165 18.956a2.528 2.528 0 0 1 2.523 2.522A2.528 2.528 0 0 1 15.165 24a2.527 2.527 0 0 1-2.52-2.522v-2.522h2.52zM15.165 17.688a2.527 2.527 0 0 1-2.52-2.523 2.526 2.526 0 0 1 2.52-2.52h6.313A2.527 2.527 0 0 1 24 15.165a2.528 2.528 0 0 1-2.522 2.523h-6.313z',
-			desc: 'Join the IETF #aauth channel for AAuth specification discussion.',
-			href: 'https://join.slack.com/t/ietf/shared_invite/zt-3wlnl6g9t-UF~rAQwk06nNJUM6QtaaPg',
-			available: true
-		},
-		{
 			name: 'Node.js SDK',
 			icon: 'nodedotjs',
 			desc: 'Reference SDK for agents and MCP servers with signed-request auth.',
@@ -241,6 +234,21 @@ ${participants}
 			desc: 'End-to-end A2A multi-agent flow with Keycloak and user consent.',
 			href: 'https://github.com/christian-posta/aauth-full-demo',
 			available: true
+		}
+	];
+
+	const slacks = [
+		{
+			name: 'IETF Slack',
+			desc: 'IETF #aauth channel for AAuth specification discussion and feedback.',
+			href: 'https://join.slack.com/t/ietf/shared_invite/zt-3wlnl6g9t-UF~rAQwk06nNJUM6QtaaPg',
+			logo: '/ietf.jpg'
+		},
+		{
+			name: 'AAuth Slack',
+			desc: 'AAuth community Slack for implementation discussion and questions.',
+			href: 'https://join.slack.com/t/aauth/shared_invite/zt-3wsxbrzfk-oYb3xNWVPLZICkXwuJpaDg',
+			logo: '/aauth.png'
 		}
 	];
 
@@ -662,7 +670,7 @@ ${participants}
 		</div>
 
 		<div
-			class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-4xl mx-auto"
+			class="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-4xl mx-auto"
 			onmousemove={(e) => {
 				const cards = e.currentTarget.querySelectorAll('.glow-card');
 				cards.forEach((card) => {
@@ -767,6 +775,55 @@ ${participants}
 				{/each}
 			</div>
 		</InView>
+	</div>
+</section>
+
+
+<!-- Community -->
+<section id="community" class="py-14 md:py-24 px-6 scroll-mt-16">
+	<div class="max-w-4xl mx-auto">
+		<InView>
+			<h2 class="text-3xl md:text-4xl font-bold text-center mb-4 uppercase">Community</h2>
+			<p class="text-center text-[var(--color-text-muted)] max-w-2xl mx-auto mb-10 text-lg">
+				Join the discussion on Slack.
+			</p>
+		</InView>
+		<div
+			class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-3xl mx-auto"
+			onmousemove={(e) => {
+				const cards = e.currentTarget.querySelectorAll('.glow-card');
+				cards.forEach((card) => {
+					const r = card.getBoundingClientRect();
+					card.style.setProperty('--mx', `${e.clientX - r.left}px`);
+					card.style.setProperty('--my', `${e.clientY - r.top}px`);
+					const dx = Math.max(r.left - e.clientX, 0, e.clientX - r.right);
+					const dy = Math.max(r.top - e.clientY, 0, e.clientY - r.bottom);
+					card.style.setProperty('--glow-opacity', Math.hypot(dx, dy) < 120 ? '1' : '0');
+				});
+			}}
+			onmouseleave={(e) => {
+				e.currentTarget.querySelectorAll('.glow-card').forEach((c) => {
+					c.style.setProperty('--glow-opacity', '0');
+				});
+			}}
+		>
+			{#each slacks as slack}
+				<InView class="h-full">
+					<a
+						href={slack.href}
+						target="_blank"
+						rel="noopener"
+						class="glow-card block h-full p-6 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)] no-underline transition-transform duration-200 hover:scale-[1.02]"
+					>
+						<h3 class="font-mono font-semibold mb-2 flex items-center gap-3">
+							<img src={slack.logo} alt="" width="32" height="32" class="inline-block rounded-md" />
+							{slack.name}
+						</h3>
+						<p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{slack.desc}</p>
+					</a>
+				</InView>
+			{/each}
+		</div>
 	</div>
 </section>
 
