@@ -242,13 +242,15 @@ ${participants}
 			name: 'IETF Slack',
 			desc: 'IETF #aauth channel for AAuth specification discussion and feedback.',
 			href: 'https://www.aauth.dev/ietf-slack',
-			logo: '/ietf.jpg'
+			logo: '/ietf.jpg',
+			event: 'IETF+Slack+Click'
 		},
 		{
 			name: 'AAuth Slack',
 			desc: 'AAuth community Slack for implementation discussion and questions.',
 			href: 'https://www.aauth.dev/slack',
-			logo: '/aauth.png'
+			logo: '/aauth.png',
+			event: 'AAuth+Slack+Click'
 		}
 	];
 
@@ -813,7 +815,7 @@ ${participants}
 						href={slack.href}
 						target="_blank"
 						rel="noopener"
-						class="glow-card block h-full p-6 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)] no-underline transition-transform duration-200 hover:scale-[1.02]"
+						class="glow-card plausible-event-name={slack.event} block h-full p-6 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)] no-underline transition-transform duration-200 hover:scale-[1.02]"
 					>
 						<h3 class="font-mono font-semibold mb-2 flex items-center gap-3">
 							<img src={slack.logo} alt="" width="32" height="32" class="inline-block rounded-md" />
