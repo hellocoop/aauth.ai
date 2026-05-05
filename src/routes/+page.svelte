@@ -110,6 +110,16 @@
 	let demoTriggers = $state([0, 0, 0]);
 	let lumaTrigger = $state(0);
 
+	let lumaTheme = $state('dark');
+	$effect(() => {
+		if (typeof window === 'undefined') return;
+		const mql = window.matchMedia('(prefers-color-scheme: light)');
+		const update = () => (lumaTheme = mql.matches ? 'light' : 'dark');
+		update();
+		mql.addEventListener('change', update);
+		return () => mql.removeEventListener('change', update);
+	});
+
 	const participants = `    participant A as Agent
     participant R as Resource
     participant P as Person Server (PS)
@@ -334,9 +344,11 @@ ${participants}
 
 <Nav />
 
-<!-- Hero (fixed behind content — content below scrolls over it) -->
-<section class="fixed inset-0 flex items-center justify-center px-6 pt-16 overflow-hidden z-0">
-	<div class="absolute inset-0 opacity-25 pointer-events-none [filter:saturate(0.5)]">
+<!-- Hero (fixed behind content — content below scrolls over it). pointer-events: only interactive inner column receives clicks so nav stays usable. -->
+<section
+	class="fixed inset-0 flex items-center justify-center px-6 pt-16 overflow-hidden z-0 pointer-events-none"
+>
+	<div class="hero-burst absolute inset-0 opacity-25 pointer-events-none [filter:saturate(0.5)]">
 		<video
 			bind:this={bgVideo}
 			src="/bg.mp4"
@@ -350,7 +362,7 @@ ${participants}
 		></video>
 	</div>
 
-	<div class="relative z-10 max-w-5xl mx-auto text-center">
+	<div class="relative z-10 max-w-5xl mx-auto text-center pointer-events-auto">
 		<h1 class="text-5xl md:text-7xl font-bold tracking-tight mb-6 leading-[1.1] uppercase">
 			Software Is <span class="text-[var(--color-accent)]">Changing</span>
 		</h1>
@@ -422,12 +434,12 @@ ${participants}
 </section>
 
 <!-- Why AAuth? -->
-<section id="why-aauth" class="py-14 md:py-24 px-6">
+<section id="why-aauth" class="scroll-mt-24 py-14 md:py-24 px-6">
 	<div class="max-w-4xl mx-auto">
 		<InView>
 			<h2 class="text-3xl md:text-4xl font-bold text-center mb-4 uppercase">Why AAuth?</h2>
 			<p class="text-center text-base text-[var(--color-text-muted)] italic mb-8">
-				By <a href="https://www.linkedin.com/in/dickhardt" target="_blank" rel="noopener" class="text-[var(--color-text)] hover:text-white transition-colors not-italic">Dick Hardt</a>, author of OAuth 2.0
+				By <a href="https://www.linkedin.com/in/dickhardt" target="_blank" rel="noopener" class="text-[var(--color-text)] hover:text-[var(--color-accent)] transition-colors not-italic">Dick Hardt</a>, author of OAuth 2.0
 			</p>
 			<div class="text-[var(--color-text-muted)] text-lg leading-relaxed space-y-5">
 				<p>
@@ -539,7 +551,7 @@ ${participants}
 {/if}
 
 <!-- How AAuth Works -->
-<section id="how-it-works" class="py-14 md:py-24 px-6">
+<section id="how-it-works" class="scroll-mt-24 py-14 md:py-24 px-6">
 	<div class="max-w-6xl mx-auto">
 		<InView>
 			<h2 class="text-3xl md:text-4xl font-bold text-center mb-4 uppercase">How AAuth Works</h2>
@@ -654,7 +666,7 @@ ${participants}
 
 
 <!-- Get Started -->
-<section id="get-started" class="py-14 md:py-24 px-6">
+<section id="get-started" class="scroll-mt-24 py-14 md:py-24 px-6">
 	<div class="max-w-6xl mx-auto">
 		<InView>
 			<h2 class="text-3xl md:text-4xl font-bold text-center mb-4 uppercase">Explore AAuth</h2>
@@ -739,13 +751,19 @@ ${participants}
 							{:else if platform.iconGlyph}
 								<span class="font-mono text-[var(--color-text)] w-[18px] text-center">{platform.iconGlyph}</span>
 							{:else}
-								<img
-									src={`https://cdn.simpleicons.org/${platform.icon}/e4e4ed`}
-									alt=""
-									width="18"
-									height="18"
-									class="inline-block"
-								/>
+								<picture>
+									<source
+										srcset={`https://cdn.simpleicons.org/${platform.icon}/0f172a`}
+										media="(prefers-color-scheme: light)"
+									/>
+									<img
+										src={`https://cdn.simpleicons.org/${platform.icon}/e4e4ed`}
+										alt=""
+										width="18"
+										height="18"
+										class="inline-block"
+									/>
+								</picture>
 							{/if}
 							{platform.name}
 							{#if !platform.available}
@@ -811,7 +829,7 @@ ${participants}
 
 
 <!-- Community -->
-<section id="community" class="py-14 md:py-24 px-6 scroll-mt-16">
+<section id="community" class="scroll-mt-24 py-14 md:py-24 px-6">
 	<div class="max-w-4xl mx-auto">
 		<InView>
 			<h2 class="text-3xl md:text-4xl font-bold text-center mb-4 uppercase">Community</h2>
@@ -877,7 +895,7 @@ ${participants}
 		<InView>
 			<div class="max-w-[600px] mx-auto rounded-xl overflow-hidden border border-[var(--color-border)] bg-[var(--color-bg-card)]">
 				<iframe
-					src="https://luma.com/embed/calendar/cal-nXUxsqTY2ZQgy3b/events?lt=dark"
+					src={`https://luma.com/embed/calendar/cal-nXUxsqTY2ZQgy3b/events?lt=${lumaTheme}`}
 					width="600"
 					height="450"
 					style="border: 0; width: 100%; display: block;"
@@ -899,13 +917,13 @@ ${participants}
 					Cryptographic identity, resource access, and user delegation — for every HTTP client.
 				</p>
 				<p class="text-sm text-[var(--color-text-muted)] mt-3">
-					Founding sponsor: <a href="https://www.linkedin.com/in/geffenpo/" target="_blank" rel="noopener" class="hover:text-white transition-colors">Geffen Posner</a>
+					Founding sponsor: <a href="https://www.linkedin.com/in/geffenpo/" target="_blank" rel="noopener" class="hover:text-[var(--color-accent)] transition-colors">Geffen Posner</a>
 				</p>
 			</div>
 			<div class="flex items-center gap-5 text-sm flex-wrap">
-				<a href="/llms.txt" class="text-[var(--color-text-muted)] hover:text-white transition-colors no-underline font-mono">llms.txt</a>
-				<a href="/home.md" class="text-[var(--color-text-muted)] hover:text-white transition-colors no-underline font-mono">home.md</a>
-				<a href="https://github.com/hellocoop/aauth.dev/edit/main/src/routes/+page.svelte" target="_blank" rel="noopener" class="text-[var(--color-text-muted)] hover:text-white transition-colors no-underline">Edit this page ↗</a>
+				<a href="/llms.txt" class="text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors no-underline font-mono">llms.txt</a>
+				<a href="/home.md" class="text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors no-underline font-mono">home.md</a>
+				<a href="https://github.com/hellocoop/aauth.dev/edit/main/src/routes/+page.svelte" target="_blank" rel="noopener" class="text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors no-underline">Edit this page ↗</a>
 			</div>
 		</div>
 	</div>
