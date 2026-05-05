@@ -339,7 +339,7 @@ ${participants}
 	<div class="absolute inset-0 opacity-25 pointer-events-none [filter:saturate(0.5)]">
 		<video
 			bind:this={bgVideo}
-			src="https://cdn.hello.coop/video/bg.webm"
+			src="/bg.mp4"
 			autoplay
 			muted
 			loop
