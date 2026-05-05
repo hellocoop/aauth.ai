@@ -1,5 +1,15 @@
 <script>
 	let mobileOpen = $state(false);
+	let scrolled = $state(false);
+
+	$effect(() => {
+		const onScroll = () => {
+			scrolled = window.scrollY > 20;
+		};
+		onScroll();
+		window.addEventListener('scroll', onScroll, { passive: true });
+		return () => window.removeEventListener('scroll', onScroll);
+	});
 
 	function closeMobile() {
 		mobileOpen = false;
@@ -14,7 +24,9 @@
 </script>
 
 <nav
-	class="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between gap-4 px-5 md:px-8 py-3.5 border-b border-[var(--color-border)] bg-[var(--color-bg)]/90 backdrop-blur-md"
+	class="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between gap-4 px-5 md:px-8 py-3.5 border-b transition-[background-color,backdrop-filter,border-color] duration-300 {scrolled || mobileOpen
+		? 'border-[var(--color-border)] bg-[var(--color-bg)]/90 backdrop-blur-md'
+		: 'border-transparent'}"
 	aria-label="Main"
 >
 	<a
