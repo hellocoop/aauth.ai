@@ -1,93 +1,149 @@
 # AAuth
 
-## HTTP Clients Need Their Own Identity
+## Software Is Changing
 
-In OAuth 2.0 and OpenID Connect, the client has no independent identity. Client identifiers are issued by each authorization server or OpenID provider — a `client_id` at Google is meaningless at GitHub. The client's identity exists only in the context of each server it has pre-registered with.
+Clients used to be written. Now agents assemble them at runtime. The protocols underneath weren't built for that.
 
-API keys are the same model pushed further: a shared secret issued by a service, copied to the client, and used as a bearer credential. The problem is that any secret that must be copied to where the workload runs will eventually be copied somewhere it shouldn't be.
+- [Try the Playground](https://playground.aauth.dev)
+- [Protocol Explorer](https://explorer.aauth.dev)
 
-AAuth starts from this premise: every agent has its own cryptographic identity. An agent identifier (`aauth:local@domain`) is bound to a signing key, published at a well-known URL, and verifiable by any party — no pre-registration, no shared secrets, no dependency on a particular server. At its simplest, an agent signs a request and a resource decides what to do based on who the agent is. This identity-based access replaces API keys and is the foundation that authorization, governance, and federation build on incrementally.
+## What Changed
 
-## Agents Are Different
+Software used to know at build time what it would call and what it would need. Now agents decide in the moment, against services they've never seen — the old protocols assumed neither.
 
-Traditional software knows at build time what services it will call and what permissions it needs. Registration, key provisioning, and scope configuration happen before the first request. This works when the set of integrations is fixed and known in advance.
+- **Client IDs Don't Travel** — In OAuth and OIDC, a client has no independent identity — a `client_id` at Google is meaningless at GitHub. Agents have no identity of their own to carry between services.
+- **Copied Secrets Leak** — API keys are a shared secret issued by the service and copied to the client. Any secret copied to a workload will eventually leak somewhere it shouldn't.
+- **Decisions Happen Mid-Task** — Agents need authorization decisions mid-task. Consent lands on human timelines — and today's protocols treat pending as an error, not a first-class state.
+- **Tool Chains Assemble Live** — Agents pick their tool chain at runtime, one call at a time. The sequence isn't declared in code — they choose the next tool as the task unfolds, and the chain shifts with every task.
+- **Scopes Don't Capture Intent** — A scope is standing permission, not per-call intent. `mail.read` looks the same whether the agent is summarizing or scraping — policy can't tell them apart.
+- **Calls Cross Trust Domains** — A single task can span orgs, clouds, and identity domains. Workload identity (SPIFFE) stops at the trust-domain edge — and authority stops there too.
 
-Agents don't work this way. They discover resources at runtime. They execute long-running tasks that span multiple services across trust domains. They need to explain what they're doing and why. They need authorization decisions mid-task, long after the user set them in motion. A protocol designed for pre-registered clients with fixed integrations cannot serve agents that discover their needs as they go.
+## Why AAuth?
 
-## What AAuth Provides
+*By [Dick Hardt](https://www.linkedin.com/in/dickhardt), author of OAuth 2.0*
 
-- **Agent identity without pre-registration**: A domain, static metadata, and a JWKS establish identity with no portal, no bilateral agreement, no shared secret.
-- **Per-instance identity**: Each agent instance gets its own identifier (`aauth:local@domain`) and signing key.
-- **Proof-of-possession on every request**: HTTP Message Signatures (RFC 9421) bind every request to the agent's key — a stolen token is useless without the private key.
-- **Two-party mode with first-call registration**: An agent calls a resource it has never contacted before; the resource returns `AAuth-Requirement`; a browser interaction handles account creation, payment, and consent. The first API call is the registration.
-- **Tool-call governance**: A person server (PS) represents the user and manages what tools the agent can call, providing permission and audit for tool use — no resource involved.
-- **Missions**: Optional scoped authorization contexts that span multiple resources. The agent proposes what it intends to do in natural language; the person server provides full context — mission, history, justification — to the appropriate decision-maker; every resource access is evaluated in context.
-- **Cross-domain federation**: The PS federates with access servers (AS) — the policy engines that guard resources — to enable access across trust domains without the agent needing to know about each one.
-- **Clarification chat**: Users can ask questions during consent; agents can explain or adjust their requests.
-- **Progressive adoption**: Each party can adopt independently; modes build on each other.
+After implementing authorization for our MCP server, I concluded [OAuth is not a good fit for MCP](https://www.linkedin.com/feed/update/urn:li:activity:7358178115673616384/) and started working with others in the identity community who'd hit the same walls.
 
-## What AAuth Does Not Do
+AAuth is what came out of that work. It gives every HTTP client its own cryptographic identity and carries identity claims and authorization claims in the same token. It coexists with OAuth 2.0 and OpenID Connect rather than replacing them.
 
-- Does not require centralized identity providers — agents publish their own identity
-- Does not use shared secrets or bearer tokens — every credential is bound to a signing key and useless without it
-- Does not require coordination to adopt — each party adds support independently
+The web gave servers identity. It's time clients got the same.
 
-## Resource Access Modes
+## How AAuth Works
 
-AAuth supports four resource access modes, each adding parties and capabilities:
+AAuth has four access modes. The simplest replaces API keys; each adds parties and capabilities. Adopt any mode independently.
 
 | Mode | Parties | Description |
 |------|---------|-------------|
-| Identity-based | Agent, Resource | Resource verifies agent's signed identity and applies its own access control |
-| Resource-managed (two-party) | Agent, Resource | Resource manages authorization with interaction, consent, or existing auth infrastructure |
-| PS-managed (three-party) | Agent, Resource, PS | Resource issues resource token to PS; PS issues auth token |
-| Federated (four-party) | Agent, Resource, PS, AS | Resource has its own access server; PS federates with AS |
+| Identity-Based | Agent + Resource | Agent signs every request. Resource verifies identity and applies its own access control. Replaces API keys. |
+| Resource-Managed | Agent + Resource | Resource handles authorization itself — via user interaction, consent, or an existing OAuth / OIDC provider. |
+| Person Server (PS) Managed | Agent + Resource + PS | Access is brokered by a server representing the user — the Person Server (PS). It handles consent and issues the auth token; the resource stays focused on its API. |
+| Federated | Agent + Resource + PS + Access Server (AS) | Internet-scale mode for cross-organization access. Resource has its own Access Server (AS); PS federates with AS across trust domains to obtain the auth token. |
 
-## Specifications
+### Identity-Based
 
-- [AAuth Protocol (Internet-Draft)](https://datatracker.ietf.org/doc/draft-hardt-aauth-protocol) — The authorization protocol. Four access modes, three token types, agent governance with missions, clarification chat, and call chaining.
-- [AAuth Headers (Internet-Draft)](https://datatracker.ietf.org/doc/draft-hardt-aauth-headers/) — HTTP response headers used across AAuth: AAuth-Requirement, AAuth-Access, and AAuth-Error.
-- [HTTP Signature Keys (Internet-Draft)](https://datatracker.ietf.org/doc/draft-hardt-httpbis-signature-key/) — Foundation layer. Well-known key discovery, Signature-Key header for conveying public keying material alongside HTTP Message Signatures (RFC 9421).
-- [R3 — Rich Resource Requests (Exploratory)](https://dickhardt.github.io/AAuth/draft-hardt-aauth-r3.html) — Vocabulary-based authorization using formats agents already understand (MCP, OpenAPI, gRPC, GraphQL).
+```
+Agent  → Resource:  HTTPSig w/ agent_token
+Agent  ← Resource:  200 OK
+```
 
-## Implementations
+### Resource-Managed
 
-| Language | Repository |
-|----------|------------|
-| TypeScript | [github.com/hellocoop/AAuth](https://github.com/hellocoop/AAuth) |
-| Python | [github.com/christian-posta/aauth-full-demo](https://github.com/christian-posta/aauth-full-demo) |
-| Java (Keycloak) | [github.com/christian-posta/keycloak-aauth-extension](https://github.com/christian-posta/keycloak-aauth-extension) |
+```
+Agent  → Resource:  HTTPSig w/ agent_token
+Agent  ← Resource:  202 (interaction required)
+                    [user completes interaction]
+Agent  → Resource:  GET pending URL
+Agent  ← Resource:  200 OK, AAuth-Access: opaque-token
+Agent  → Resource:  HTTPSig w/ agent_token, Authorization: AAuth opaque-token
+Agent  ← Resource:  200 OK
+```
 
-## npm Packages
+### Person Server (PS) Managed
 
-The `@aauth` org on npm publishes building blocks for agents and MCP servers (current version 0.8.1):
+```
+Agent  → Resource:  HTTPSig w/ agent_token, POST /authorize
+Agent  ← Resource:  resource_token (aud = PS URL)
+Agent  → PS:        HTTPSig w/ agent_token, POST /token w/ resource_token
+Agent  ← PS:        auth_token
+Agent  → Resource:  HTTPSig w/ auth_token, GET /api/documents
+Agent  ← Resource:  200 OK
+```
 
-| Package | Description |
-|---------|-------------|
-| [@aauth/bootstrap](https://www.npmjs.com/package/@aauth/bootstrap) | CLI for bootstrapping AAuth agent keys and configuration |
-| [@aauth/fetch](https://www.npmjs.com/package/@aauth/fetch) | CLI for making AAuth-authenticated HTTP requests |
-| [@aauth/local-keys](https://www.npmjs.com/package/@aauth/local-keys) | Manage AAuth agent signing keys across hardware and software backends |
-| [@aauth/hardware-keys](https://www.npmjs.com/package/@aauth/hardware-keys) | Hardware key backends — YubiKey PIV and macOS Secure Enclave |
-| [@aauth/mcp-agent](https://www.npmjs.com/package/@aauth/mcp-agent) | Authenticated MCP transport with HTTP Signatures for AAuth agents |
-| [@aauth/mcp-server](https://www.npmjs.com/package/@aauth/mcp-server) | Server-side building blocks — challenge headers, interaction management, resource tokens |
-| [@aauth/mcp-stdio](https://www.npmjs.com/package/@aauth/mcp-stdio) | Stdio-to-HTTP proxy for MCP with AAuth signatures |
-| [@aauth/mcp-openclaw](https://www.npmjs.com/package/@aauth/mcp-openclaw) | OpenClaw plugin for AAuth-authenticated MCP server connections |
+### Federated
 
-## Try It
+```
+Agent  → Resource:  HTTPSig w/ agent_token, POST /authorize
+Agent  ← Resource:  resource_token (aud = AS URL)
+Agent  → PS:        HTTPSig w/ agent_token, POST /token w/ resource_token
+PS     → AS:        HTTPSig w/ jwks_uri, POST /token w/ resource_token
+PS     ← AS:        auth_token
+Agent  ← PS:        auth_token
+Agent  → Resource:  HTTPSig w/ auth_token, GET /api/documents
+Agent  ← Resource:  200 OK
+```
 
-- [Playground](https://playground.aauth.dev) — Interactive sandbox for driving AAuth flows against live endpoints
-- [Protocol Explorer](https://explorer.aauth.dev) — Browse access modes, tokens, and headers with side-by-side wire examples
-- [whoami.aauth.dev](https://whoami.aauth.dev) — Minimal AAuth identity resource demo
-- [notes.aauth.dev](https://notes.aauth.dev) — Notes API using AAuth R3; agents declare OpenAPI operations and consent is over actions, not endpoints
+Token glossary:
 
-The demos and Playground run against the Hello beta Person Server; data is reset regularly.
+- `agent_token` establishes the agent's identity
+- `resource_token` describes the access needed
+- `auth_token` grants an agent access to a resource
+- `jwks_uri` Person Server (PS)'s JWKS endpoint, discovered via well-known metadata
+
+## Explore AAuth
+
+Try the protocol, explore the SDKs, and follow the conversation. The demos and Playground run against the Hellō Beta Person Server — data is reset regularly, so don't store anything you need to keep.
+
+### Demos
+
+| Demo | Description | Links |
+|------|-------------|-------|
+| Protocol Explorer | Browse AAuth access modes, tokens, and headers with side-by-side wire examples. | [Open Explorer](https://explorer.aauth.dev) |
+| whoami.aauth.dev | A minimal AAuth identity resource — one endpoint that returns who the caller is. | [Try in Playground](https://playground.aauth.dev) · [Source](https://github.com/aauth-dev/whoami) |
+| notes.aauth.dev | A notes API using [AAuth R3](https://github.com/dickhardt/AAuth/blob/main/draft-hardt-aauth-r3.md). Agents declare OpenAPI operations; consent is over actions, not endpoints. | [Try in Playground](https://playground.aauth.dev) · [Source](https://github.com/aauth-dev/notes) |
+
+### Platforms
+
+| Platform | Description | Repository |
+|----------|-------------|------------|
+| Specifications | The Internet-Drafts defining the AAuth protocol and signatures. | [github.com/dickhardt/AAuth](https://github.com/dickhardt/AAuth) |
+| Node.js SDK | Reference SDK for agents and MCP servers with signed-request auth. | [github.com/hellocoop/AAuth](https://github.com/hellocoop/AAuth) |
+| Python Demo Source | End-to-end A2A multi-agent flow with Keycloak and user consent. | [github.com/christian-posta/aauth-full-demo](https://github.com/christian-posta/aauth-full-demo) |
+
+### Deep Dives
+
+| Date | Author | Post |
+|------|--------|------|
+| 2026-04-28 | Mark Hendrickson | [Know Which of Your Agents Wrote What](https://markmhendrickson.com/posts/know-which-of-your-agents-wrote-what/) — Per-row attribution for agent writes via AAuth identity in Neotoma |
+| 2026-04-15 | Karl McGuinness | [AAuth Now Has a Mission Layer](https://www.linkedin.com/pulse/aauth-now-has-mission-layer-karl-mcguinness-uhqjc/) — Mission is now a first-class protocol object — is the layer strong enough? |
+| 2026-03-31 | Christian Posta | [AAuth Full Demo](https://blog.christianposta.com/aauth-full-demo/) — Working demo with Keycloak, Agentgateway, Java/Python/Rust |
+| 2026-03-21 | Karl McGuinness | [Open-World OAuth Still Needs Mission Shaping](https://notes.karlmcguinness.com/notes/open-world-oauth-still-needs-mission-shaping/) — Open-world OAuth, discovery, and bounded authority across delegation chains |
+| 2026-03-15 | Karl McGuinness | [Mission Architecture on AAuth](https://notes.karlmcguinness.com/notes/mission-architecture-on-aauth/) — Whether AAuth is the right protocol foundation for mission-bound authorization |
+| 2026-02-17 | Christian Posta | [Deep Dive AAuth — Identity and Access Management for AI Agents](https://blog.christianposta.com/exploring-aauth-agent-auth-identity-and-access-management-for-ai-agents/) — Comprehensive overview of AAuth architecture and design |
+| 2025-06-02 | Christian Posta | [Do AI Agents Need Their Own Identity?](https://blog.christianposta.com/do-we-even-need-agent-identity/) — The case for independent agent identity |
 
 ## Community
 
-- [Office Hours](https://lu.ma/aauth) — Open community calls; ask questions, share what you're building, or listen along
+Join the discussion on Slack.
+
+- [IETF Slack](https://www.aauth.dev/ietf-slack) — IETF #aauth channel for AAuth specification discussion and feedback.
+- [AAuth Slack](https://www.aauth.dev/slack) — AAuth community Slack for implementation discussion and questions.
+
+## Office Hours
+
+Drop in to ask questions, share what you're building, or listen along. Sign up at [lu.ma/aauth](https://lu.ma/aauth).
+
+## Specifications
+
+| Spec | Status | Description |
+|------|--------|-------------|
+| [AAuth Protocol](https://datatracker.ietf.org/doc/draft-hardt-aauth-protocol) ([editor's copy](https://dickhardt.github.io/AAuth/draft-hardt-aauth-protocol.html)) | Internet-Draft | The authorization protocol for agent-to-resource access. Four access modes, three token types, agent governance, missions, clarification chat, and call chaining. |
+| [HTTP Signature Keys](https://datatracker.ietf.org/doc/draft-hardt-httpbis-signature-key/) ([editor's copy](https://dickhardt.github.io/signature-key/draft-hardt-httpbis-signature-key.html)) | Internet-Draft | Foundation layer. Well-known key discovery, the Signature-Key header for conveying public keying material alongside HTTP Message Signatures. |
+| [R3 — Rich Resource Requests](https://dickhardt.github.io/AAuth/draft-hardt-aauth-r3.html) | Exploratory | Vocabulary-based authorization using formats agents already understand (MCP, OpenAPI, gRPC, GraphQL). |
 
 ## Links
 
+- Founding sponsor: [Geffen Posner](https://www.linkedin.com/in/geffenpo/)
 - [AAuth Website](https://www.aauth.dev)
 - [Specification Source (GitHub)](https://github.com/dickhardt/AAuth)
 - [Website Source (GitHub)](https://github.com/hellocoop/aauth.dev)
+- [llms.txt](https://www.aauth.dev/llms.txt)
