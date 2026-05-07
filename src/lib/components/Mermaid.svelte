@@ -151,7 +151,6 @@
 			svgEl.setAttribute('viewBox', `${vb.x} ${vb.y} ${targetW} ${targetH}`);
 			svgEl.setAttribute('height', String(targetH));
 
-
 		});
 	});
 </script>

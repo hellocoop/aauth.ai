@@ -127,38 +127,38 @@
 
 	const modes = [
 		{
-			name: 'Identity-Based',
+			name: 'Identity Based',
 			parties: 'Agent + Resource',
 			desc: 'Resource authorizes off the agent identifier alone — no authorization flow, no tokens beyond the agent token.',
 			diagram: `sequenceDiagram
 ${participants}
-    A->>R: HTTPSig w/ agent token
+    A->>R: HTTPSig w/ agent_token
     R-->>A: 200 OK`,
 			steps: [
-				{ from: 'Agent', to: 'Resource', lines: ['HTTPSig w/ agent token'] },
+				{ from: 'Agent', to: 'Resource', lines: ['HTTPSig w/ agent_token'] },
 				{ from: 'Resource', to: 'Agent', lines: ['200 OK'], dashed: true }
 			]
 		},
 		{
-			name: 'Resource-Managed',
+			name: 'Resource Managed',
 			parties: 'Agent + Resource',
 			desc: 'Resource handles authorization itself — via user interaction, consent, or an existing OAuth / OIDC provider.',
 			diagram: `sequenceDiagram
 ${participants}
-    A->>R: HTTPSig w/ agent token
+    A->>R: HTTPSig w/ agent_token
     R-->>A: 202\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0<br/>(interaction required)
     Note over A,R: user completes interaction
     A->>R: GET pending URL
-    R-->>A: 200 OK\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0<br/>AAuth-Access:<br/>opaque-token\u00A0\u200D
-    A->>R: HTTPSig w/ agent token<br/>Authorization:\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0<br/>AAuth opaque-token\u00A0\u00A0\u00A0\u00A0\u200D
+    R-->>A: 200 OK\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0<br/>AAuth-Access: opaque-token\u00A0\u200D
+    A->>R: HTTPSig w/ agent_token\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0<br/>Authorization: AAuth opaque-token\u00A0\u200D
     R-->>A: 200 OK`,
 			steps: [
-				{ from: 'Agent', to: 'Resource', lines: ['HTTPSig w/ agent token'] },
+				{ from: 'Agent', to: 'Resource', lines: ['HTTPSig w/ agent_token'] },
 				{ from: 'Resource', to: 'Agent', lines: ['202 (interaction required)'], dashed: true },
 				{ note: 'user completes interaction' },
 				{ from: 'Agent', to: 'Resource', lines: ['GET pending URL'] },
 				{ from: 'Resource', to: 'Agent', lines: ['200 OK', 'AAuth-Access: opaque-token'], dashed: true },
-				{ from: 'Agent', to: 'Resource', lines: ['HTTPSig w/ agent token', 'Authorization: AAuth opaque-token'] },
+				{ from: 'Agent', to: 'Resource', lines: ['HTTPSig w/ agent_token', 'Authorization: AAuth opaque-token'] },
 				{ from: 'Resource', to: 'Agent', lines: ['200 OK'], dashed: true }
 			]
 		},
@@ -168,16 +168,16 @@ ${participants}
 			desc: "Person Server handles authorization for the user — issuing the auth token after consent.",
 			diagram: `sequenceDiagram
 ${participants}
-    A->>R: HTTPSig w/ agent token<br/>POST /authorize\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u200D
-    R-->>A: resource_token                <br/>(aud = Person Server URL)‍
-    A->>P: HTTPSig w/ agent token<br/>POST /token\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0<br/>w/ resource_token\u00A0\u00A0\u00A0\u00A0\u00A0\u200D
+    A->>R: HTTPSig w/ agent_token<br/>POST /authorize\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u200D
+    R-->>A: resource_token           <br/>(aud = Person Server URL)‍
+    A->>P: HTTPSig w/ agent_token<br/>POST /token\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0<br/>w/ resource_token\u00A0\u00A0\u00A0\u00A0\u00A0\u200D
     P-->>A: auth_token
     A->>R: HTTPSig w/ auth_token<br/>GET /api/documents\u00A0\u00A0\u00A0\u200D
     R-->>A: 200 OK`,
 			steps: [
-				{ from: 'Agent', to: 'Resource', lines: ['HTTPSig w/ agent token', 'POST /authorize'] },
+				{ from: 'Agent', to: 'Resource', lines: ['HTTPSig w/ agent_token', 'POST /authorize'] },
 				{ from: 'Resource', to: 'Agent', lines: ['resource_token (aud = Person Server URL)'], dashed: true },
-				{ from: 'Agent', to: 'Person Server', lines: ['HTTPSig w/ agent token', 'POST /token w/ resource_token'] },
+				{ from: 'Agent', to: 'Person Server', lines: ['HTTPSig w/ agent_token', 'POST /token w/ resource_token'] },
 				{ from: 'Person Server', to: 'Agent', lines: ['auth_token'], dashed: true },
 				{ from: 'Agent', to: 'Resource', lines: ['HTTPSig w/ auth token', 'GET /api/documents'] },
 				{ from: 'Resource', to: 'Agent', lines: ['200 OK'], dashed: true }
@@ -189,18 +189,18 @@ ${participants}
 			desc: "Access Server handles authorization for the resource — federating with the agent's Person Server across trust domains.",
 			diagram: `sequenceDiagram
 ${participants}
-    A->>R: HTTPSig w/ agent token<br/>POST /authorize\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u200D
-    R-->>A: resource_token                <br/>(aud = Access Server URL)‍
-    A->>P: HTTPSig w/ agent token<br/>POST /token\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0<br/>w/ resource_token\u00A0\u00A0\u00A0\u00A0\u00A0\u200D
+    A->>R: HTTPSig w/ agent_token<br/>POST /authorize\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u200D
+    R-->>A: resource_token           <br/>(aud = Access Server URL)‍
+    A->>P: HTTPSig w/ agent_token<br/>POST /token\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0<br/>w/ resource_token\u00A0\u00A0\u00A0\u00A0\u00A0\u200D
     P->>S: HTTPSig w/ jwks_uri<br/>POST /token\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0<br/>w/ resource_token\u00A0\u00A0\u200D
     S-->>P: auth_token
     P-->>A: auth_token
     A->>R: HTTPSig w/ auth_token<br/>GET /api/documents\u00A0\u00A0\u00A0\u200D
     R-->>A: 200 OK`,
 			steps: [
-				{ from: 'Agent', to: 'Resource', lines: ['HTTPSig w/ agent token', 'POST /authorize'] },
+				{ from: 'Agent', to: 'Resource', lines: ['HTTPSig w/ agent_token', 'POST /authorize'] },
 				{ from: 'Resource', to: 'Agent', lines: ['resource_token (aud = Access Server URL)'], dashed: true },
-				{ from: 'Agent', to: 'Person Server', lines: ['HTTPSig w/ agent token', 'POST /token w/ resource_token'] },
+				{ from: 'Agent', to: 'Person Server', lines: ['HTTPSig w/ agent_token', 'POST /token w/ resource_token'] },
 				{ from: 'Person Server', to: 'Access Server', lines: ['HTTPSig w/ jwks_uri', 'POST /token w/ resource_token'] },
 				{ from: 'Access Server', to: 'Person Server', lines: ['auth_token'], dashed: true },
 				{ from: 'Person Server', to: 'Agent', lines: ['auth_token'], dashed: true },
@@ -617,8 +617,8 @@ ${participants}
 							{/each}
 						</div>
 
-						<!-- Raw HTTP wire example for Resource-Managed (commented out for now)
-						{#if modes[activeMode].name === 'Resource-Managed'}
+						<!-- Raw HTTP wire example for Resource Managed (commented out for now)
+						{#if modes[activeMode].name === 'Resource Managed'}
 							<p class="text-xs text-[var(--color-text-dim)] font-mono mt-6 mb-2">as raw HTTP:</p>
 							<div class="rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-code)] p-5 font-mono text-sm leading-loose overflow-x-auto">
 								... wire example markup ...
@@ -641,13 +641,13 @@ ${participants}
 	</div>
 </section>
 
-<!-- The 202 Pattern (commented out — redundant with Resource-Managed diagram)
+<!-- The 202 Pattern (commented out — redundant with Resource Managed diagram)
 <section class="py-[1.82rem] md:py-[3.12rem]">
 	<div class="max-w-4xl mx-auto px-5 md:px-8">
 		<InView>
 			<h2 class="text-3xl md:text-4xl font-bold text-center mb-4 uppercase">On the Wire</h2>
 			<p class="text-center text-[var(--color-text-muted)] max-w-2xl mx-auto mb-12 text-lg">
-				The Resource-Managed flow as raw HTTP — showing Signature-Key, AAuth-Requirement, and AAuth-Access headers.
+				The Resource Managed flow as raw HTTP — showing Signature-Key, AAuth-Requirement, and AAuth-Access headers.
 			</p>
 		</InView>
 		<InView>
