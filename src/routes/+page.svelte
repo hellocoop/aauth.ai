@@ -225,6 +225,13 @@
 			available: true
 		},
 		{
+			name: '.NET SDK',
+			icon: 'dotnet',
+			desc: 'Reference SDK and samples for .NET agents and MCP servers with signed-request auth.',
+			href: 'https://github.com/aauth-dev/dotnet-samples',
+			available: true
+		},
+		{
 			name: 'Python Demo Source',
 			icon: 'python',
 			desc: 'End-to-end A2A multi-agent flow with Keycloak and user consent.',
