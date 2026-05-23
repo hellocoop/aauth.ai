@@ -4,7 +4,7 @@
 
 Clients used to be written. Now agents assemble them at runtime. The protocols underneath weren't built for that.
 
-- [Try the Playground](https://playground.aauth.dev)
+- [Try the demo](https://playground.aauth.dev)
 - [Protocol Explorer](https://explorer.aauth.dev)
 
 ## What Changed
@@ -91,15 +91,15 @@ Token glossary:
 
 ## Explore AAuth
 
-Try the protocol, explore the SDKs, and follow the conversation. The demos and Playground run against the Hellō Beta Person Server — data is reset regularly, so don't store anything you need to keep.
+Try the protocol, explore the SDKs, and follow the conversation. The demos run against the Hellō Beta Person Server — data is reset regularly, so don't store anything you need to keep.
 
 ### Demos
 
 | Demo | Description | Links |
 |------|-------------|-------|
 | Protocol Explorer | Browse AAuth access modes, tokens, and headers with side-by-side wire examples. | [Open Explorer](https://explorer.aauth.dev) |
-| whoami.aauth.dev | A minimal AAuth identity resource — one endpoint that returns who the caller is. | [Try in Playground](https://playground.aauth.dev) · [Source](https://github.com/aauth-dev/whoami) |
-| notes.aauth.dev | A notes API using [AAuth R3](https://github.com/dickhardt/AAuth/blob/main/draft-hardt-aauth-r3.md). Agents declare OpenAPI operations; consent is over actions, not endpoints. | [Try in Playground](https://playground.aauth.dev) · [Source](https://github.com/aauth-dev/notes) |
+| whoami.aauth.dev | A minimal AAuth identity resource — one endpoint that returns who the caller is. | [Try it](https://playground.aauth.dev) · [Source](https://github.com/aauth-dev/whoami) |
+| notes.aauth.dev | A notes API using [AAuth R3](https://github.com/dickhardt/AAuth/blob/main/draft-hardt-aauth-r3.md). Agents declare OpenAPI operations; consent is over actions, not endpoints. | [Try it](https://playground.aauth.dev) · [Source](https://github.com/aauth-dev/notes) |
 
 ### Platforms
 

@@ -32,12 +32,12 @@ Building blocks for AAuth agents and MCP servers, published under the `@aauth` o
 
 ## Try It
 
-- [Playground](https://playground.aauth.dev): Interactive sandbox for driving AAuth flows against live endpoints
+- [Demo](https://playground.aauth.dev): Interactive agent for driving AAuth flows against live endpoints
 - [Protocol Explorer](https://explorer.aauth.dev): Browse access modes, tokens, and headers with side-by-side wire examples
 - [whoami.aauth.dev](https://whoami.aauth.dev): Minimal AAuth identity resource — sign a request, release identity claims
 - [notes.aauth.dev](https://notes.aauth.dev): Notes API using AAuth R3 — agents declare OpenAPI operations, consent is over actions not endpoints
 
-The demos and Playground run against the Hello beta Person Server; data is reset regularly.
+The demos run against the Hello beta Person Server; data is reset regularly.
 
 ## Community
 

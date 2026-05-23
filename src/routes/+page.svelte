@@ -96,7 +96,7 @@
 			logo: '/demos/whoami.png',
 			desc: "A minimal AAuth identity resource — one endpoint that returns who the caller is.",
 			primary: 'https://playground.aauth.dev',
-			primaryLabel: 'Try in Playground',
+			primaryLabel: 'Try it',
 			source: 'https://github.com/aauth-dev/whoami'
 		},
 		{
@@ -104,7 +104,7 @@
 			logo: '/demos/notes.png',
 			desc: "A notes API using <a href=\"https://github.com/dickhardt/AAuth/blob/main/draft-hardt-aauth-r3.md\" target=\"_blank\" rel=\"noopener\" class=\"text-[var(--color-text)] hover:underline\">AAuth R3 ↗</a>. Agents declare OpenAPI operations; consent is over actions, not endpoints.",
 			primary: 'https://playground.aauth.dev',
-			primaryLabel: 'Try in Playground',
+			primaryLabel: 'Try it',
 			source: 'https://github.com/aauth-dev/notes'
 		}
 	];
@@ -348,7 +348,7 @@
 				class="font-display inline-flex items-center justify-center gap-2 px-7 py-3.5 w-full sm:w-auto rounded-lg bg-[var(--color-accent)] text-black font-medium no-underline"
 			>
 				<span class="font-mono text-sm">&gt;</span>
-				<DecryptText text="Try the Playground" trigger={playgroundTrigger} />
+				<DecryptText text="Try the demo" trigger={playgroundTrigger} />
 			</a>
 			<a
 				href="https://explorer.aauth.dev"
@@ -637,7 +637,7 @@
 				Try the protocol, explore the SDKs, and follow the conversation.
 			</p>
 			<p class="text-lg text-[var(--color-text-dim)] italic mb-12">
-				The demos and Playground run against the Hellō Beta Person Server — data is reset regularly, so don't store anything you need to keep.
+				The demos run against the Hellō Beta Person Server — data is reset regularly, so don't store anything you need to keep.
 			</p>
 		</InView>
 
