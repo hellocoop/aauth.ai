@@ -221,7 +221,7 @@
 			name: 'Node.js SDK',
 			icon: 'nodedotjs',
 			desc: 'Reference SDK for agents and MCP servers with signed-request auth.',
-			href: 'https://github.com/hellocoop/AAuth',
+			href: 'https://github.com/aauth-dev/packages-js',
 			available: true
 		},
 		{
@@ -229,6 +229,13 @@
 			icon: 'python',
 			desc: 'End-to-end A2A multi-agent flow with Keycloak and user consent.',
 			href: 'https://github.com/christian-posta/aauth-full-demo',
+			available: true
+		},
+		{
+			name: '.NET SDK',
+			icon: 'dotnet',
+			desc: 'SDK for agents and resources with signed-request proof-of-possession.',
+			href: 'https://github.com/aauth-dev/dotnet-samples',
 			available: true
 		}
 	];
@@ -676,7 +683,7 @@
 		</div>
 
 		<div
-			class="grid grid-cols-1 sm:grid-cols-3 gap-4"
+			class="grid grid-cols-1 sm:grid-cols-2 gap-3"
 			onmousemove={(e) => {
 				const cards = e.currentTarget.querySelectorAll('.glow-card');
 				cards.forEach((card) => {

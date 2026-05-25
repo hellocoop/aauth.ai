@@ -52,4 +52,4 @@ We welcome contributions — new platform guides, corrections, suggestions, and 
 ## Related repos
 
 - **[dickhardt/AAuth](https://github.com/dickhardt/AAuth)** — Protocol specifications (IETF Internet-Drafts)
-- **[hellocoop/AAuth](https://github.com/hellocoop/AAuth)** — TypeScript reference implementation
+- **[aauth-dev/packages-js](https://github.com/aauth-dev/packages-js)** — TypeScript reference implementation
