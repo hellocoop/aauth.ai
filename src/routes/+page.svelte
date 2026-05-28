@@ -82,17 +82,24 @@
 		}
 	];
 
+	const cliPrompt = `AAuth is an HTTP authorization protocol that lets agents call protected resources on your behalf using signed requests instead of bearer tokens. This prompt walks an agent through AAuth end-to-end — generate a signing keypair, publish the public key so resources can verify your signatures, then make a real signed call — and has the agent explain each step as it happens.
+
+First, check whether a signing keypair has already been generated on this machine: npx @aauth/bootstrap list. If nothing's set up, follow npx @aauth/bootstrap skill setup step-by-step — it'll generate a keypair, ask where to publish the public key (a JWKS file hosted at a URL the resource can fetch — GitHub Pages, GitLab Pages, Cloudflare Pages, etc.), and verify it's reachable before continuing. Then call https://whoami.aauth.dev?scope=openid+profile with npx @aauth/fetch -v — whoami echoes back the identity claims the resource sees about you, and -v prints each protocol event (token exchange, signature construction, response) so the wire-level behavior is visible.
+
+Narrate the entire run as a single flat bulleted list — each bullet is one sentence in present-progressive form with a short "so that …" clause and the artifact's JSON in a fenced code block. For the fetch portion, use each -v event's description field verbatim and include its raw JSON payload as emitted by fetch — do not decode JWTs or substitute claims for token strings; if consent is already on file (no 202 from token-exchange), say so and explain why no browser opened. End with the resource's response body.
+
+For any protocol detail, fetch the AAuth spec URL printed at the bottom of npx @aauth/bootstrap skill rather than inferring from CLI output.`;
+
 	const demos = [
 		{
-			name: 'Protocol Explorer',
-			iconPath: 'm21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z',
-			desc: 'Browse AAuth access modes, tokens, and headers with side-by-side wire examples.',
-			primary: 'https://explorer.aauth.dev',
-			primaryLabel: 'Open Explorer',
+			name: 'Have your agent walk you through AAuth',
+			iconPath: 'M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z',
+			desc: 'Paste this prompt into Claude Code, Cursor, or any CLI agent. The agent bootstraps itself, calls whoami.aauth.dev, and narrates each protocol event as it runs.',
+			prompt: cliPrompt,
 			source: null
 		},
 		{
-			name: 'whoami.aauth.dev',
+			name: 'Web Agent Demo: whoami',
 			logo: '/demos/whoami.png',
 			desc: "A minimal AAuth identity resource — one endpoint that returns who the caller is.",
 			primary: 'https://playground.aauth.dev',
@@ -100,16 +107,33 @@
 			source: 'https://github.com/aauth-dev/whoami'
 		},
 		{
-			name: 'notes.aauth.dev',
+			name: 'Web Agent Demo: notes',
 			logo: '/demos/notes.png',
 			desc: "A notes API using <a href=\"https://github.com/dickhardt/AAuth/blob/main/draft-hardt-aauth-r3.md\" target=\"_blank\" rel=\"noopener\" class=\"text-[var(--color-text)] hover:underline\">AAuth R3 ↗</a>. Agents declare OpenAPI operations; consent is over actions, not endpoints.",
 			primary: 'https://playground.aauth.dev',
 			primaryLabel: 'Try it',
 			source: 'https://github.com/aauth-dev/notes'
+		},
+		{
+			name: 'Protocol Explorer',
+			iconPath: 'm21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z',
+			desc: 'Browse AAuth access modes, tokens, and headers with side-by-side wire examples.',
+			primary: 'https://explorer.aauth.dev',
+			primaryLabel: 'Open Explorer',
+			source: null
 		}
 	];
 
-	let demoTriggers = $state([0, 0, 0]);
+	let demoTriggers = $state([0, 0, 0, 0]);
+	let copiedIdx = $state(-1);
+
+	async function copyPrompt(text, idx) {
+		try {
+			await navigator.clipboard.writeText(text);
+			copiedIdx = idx;
+			setTimeout(() => { if (copiedIdx === idx) copiedIdx = -1; }, 1800);
+		} catch {}
+	}
 	let lumaTrigger = $state(0);
 
 	let lumaTheme = $state('dark');
@@ -640,11 +664,8 @@
 	<div class="max-w-7xl mx-auto px-5 md:px-8">
 		<InView>
 			<h2 class="text-3xl md:text-4xl font-bold mb-4 uppercase">Explore AAuth</h2>
-			<p class="text-[var(--color-text-muted)] mb-3 text-lg">
+			<p class="text-[var(--color-text-muted)] mb-12 text-lg">
 				Try the protocol, explore the SDKs, and follow the conversation.
-			</p>
-			<p class="text-lg text-[var(--color-text-dim)] italic mb-12">
-				The demos run against the Hellō Beta Person Server — data is reset regularly, so don't store anything you need to keep.
 			</p>
 		</InView>
 
@@ -663,16 +684,30 @@
 							{demo.name}
 						</h3>
 						<p class="text-sm text-[var(--color-text-muted)] mb-5 leading-relaxed">{@html demo.desc}</p>
+						{#if demo.prompt}
+							<pre class="mb-4 p-3 rounded-lg bg-[var(--color-bg-code)] border border-[var(--color-border)] text-xs text-[var(--color-text-muted)] font-mono leading-relaxed overflow-x-auto whitespace-nowrap">{demo.prompt.replace(/\n+/g, ' ')}</pre>
+						{/if}
 						<div class="mt-auto flex flex-wrap gap-4 text-sm">
-							<a
-								href={demo.primary}
-								target="_blank"
-								rel="noopener"
-								onmouseenter={() => (demoTriggers[i] = demoTriggers[i] + 1)}
-								class="text-[var(--color-accent)] no-underline"
-							>
-								<DecryptText text={`${demo.primaryLabel} ↗`} trigger={demoTriggers[i]} />
-							</a>
+							{#if demo.prompt}
+								<button
+									type="button"
+									onclick={() => copyPrompt(demo.prompt, i)}
+									onmouseenter={() => (demoTriggers[i] = demoTriggers[i] + 1)}
+									class="text-[var(--color-accent)] no-underline cursor-pointer bg-transparent border-0 p-0 font-inherit"
+								>
+									<DecryptText text={copiedIdx === i ? 'Copied ✓' : 'Copy prompt'} trigger={demoTriggers[i]} />
+								</button>
+							{:else}
+								<a
+									href={demo.primary}
+									target="_blank"
+									rel="noopener"
+									onmouseenter={() => (demoTriggers[i] = demoTriggers[i] + 1)}
+									class="text-[var(--color-accent)] no-underline"
+								>
+									<DecryptText text={`${demo.primaryLabel} ↗`} trigger={demoTriggers[i]} />
+								</a>
+							{/if}
 							{#if demo.source}
 								<a href={demo.source} target="_blank" rel="noopener" class="text-[var(--color-text-muted)] no-underline hover:underline">Source ↗</a>
 							{/if}
